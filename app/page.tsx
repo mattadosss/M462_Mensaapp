@@ -1,22 +1,64 @@
-import Hero from "@/components/hero";
-import ConnectSupabaseSteps from "@/components/tutorial/connect-supabase-steps";
-import SignUpUserSteps from "@/components/tutorial/sign-up-user-steps";
-import { hasEnvVars } from "@/utils/supabase/check-env-vars";
 import { createClient } from '@/utils/supabase/server';
+import { formatDate } from '@/utils/date';
+import { MealCard } from '@/components/meal-card';
+import Link from 'next/link';
 
-export default async function Home() {
-  const supabase = await createClient();
-  const ret = await supabase.from("users").select();
-  return <pre>{JSON.stringify(ret)}</pre>
+async function getTodayMenu() {
+    const supabase = await createClient();
+    const today = new Date();
+    const todayString = formatDate(today);
 
-  return (
-    <>
-      <Hero />
-      <main className="flex-1 flex flex-col gap-6 px-4">
-        <h2 className="font-medium text-xl mb-4">Next steps</h2>
-        {hasEnvVars ? <SignUpUserSteps /> : <ConnectSupabaseSteps />}
-      </main>
-    </>
-  );
-  
+    // Fetch today's daily menu
+    const { data: dailyMenu, error: dailyMenuError } = await supabase
+        .from('daily_menus')
+        .select('*')
+        .eq('date', todayString)
+        .single();
+
+    if (dailyMenuError || !dailyMenu) {
+        return [];
+    }
+
+    // Fetch meals for today's menu
+    const { data: meals, error: mealsError } = await supabase
+        .from('meals')
+        .select('*')
+        .in('id', dailyMenu.meal_ids);
+
+    if (mealsError || !meals) {
+        return [];
+    }
+
+    return meals;
+}
+
+export default async function HomePage() {
+    const meals = await getTodayMenu();
+    const today = new Date();
+    const todayLabel = today.toLocaleDateString('en-US', {
+        weekday: 'long',
+        month: 'long',
+        day: 'numeric',
+    });
+
+    return (
+        <div className="container mx-auto py-10">
+            <h1 className="text-3xl font-bold mb-6">Today's Menu</h1>
+            <h2 className="text-xl font-semibold mb-4">{todayLabel}</h2>
+            {meals.length > 0 ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                    {meals.map((meal) => (
+                        <MealCard key={meal.id} meal={meal} />
+                    ))}
+                </div>
+            ) : (
+                <p className="text-gray-500 italic mb-8">No menu available for today.</p>
+            )}
+            <div className="flex justify-center">
+                <Link href="/menu">
+                    <span className="inline-block px-8 py-3 bg-blue-600 text-white rounded-lg text-lg font-semibold hover:bg-blue-700 transition">View Full Weekly Menu</span>
+                </Link>
+            </div>
+        </div>
+    );
 }
