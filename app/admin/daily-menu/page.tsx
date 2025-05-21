@@ -54,6 +54,7 @@ export default function DailyMenuPage() {
                 return;
             }
 
+            console.log('Fetched meals:', data); // Debug log
             setMeals(data || []);
         };
 
@@ -145,7 +146,7 @@ export default function DailyMenuPage() {
                                         {meal.description}
                                     </p>
                                     <p className="text-sm font-medium mt-2">
-                                        {meal.price.toFixed(2)} €
+                                        {meal.portion_sizes.medium.price.toFixed(2)} €
                                     </p>
                                 </div>
                             ))}
