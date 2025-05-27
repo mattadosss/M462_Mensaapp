@@ -30,6 +30,7 @@ type DailyMenuFormValues = z.infer<typeof dailyMenuSchema>;
 export default function DailyMenuPage() {
     const [meals, setMeals] = useState<Meal[]>([]);
     const [selectedMeals, setSelectedMeals] = useState<Meal[]>([]);
+    const [searchTerm, setSearchTerm] = useState('');
     const [isLoading, setIsLoading] = useState(false);
 
     const form = useForm<DailyMenuFormValues>({
@@ -54,7 +55,7 @@ export default function DailyMenuPage() {
                 return;
             }
 
-            console.log('Fetched meals:', data); // Debug log
+            console.log('Fetched meals:', data);
             setMeals(data || []);
         };
 
@@ -73,7 +74,7 @@ export default function DailyMenuPage() {
             setSelectedMeals(selectedMeals.filter(m => m.id !== mealId));
         } else {
             if (currentMealIds.length >= 3) {
-                return; // Don't allow more than 3 meals
+                return;
             }
             newMealIds = [...currentMealIds, mealId];
             setSelectedMeals([...selectedMeals, meal]);
@@ -98,7 +99,6 @@ export default function DailyMenuPage() {
 
             if (error) throw error;
 
-            // Reset form
             form.reset();
             setSelectedMeals([]);
         } catch (error) {
@@ -111,7 +111,7 @@ export default function DailyMenuPage() {
     return (
         <div className="container mx-auto py-10">
             <h1 className="text-2xl font-bold mb-6">Daily Menu Management</h1>
-            
+
             <Form {...form}>
                 <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
                     <FormField
@@ -128,28 +128,44 @@ export default function DailyMenuPage() {
                         )}
                     />
 
+                    {/* 🔍 Search input for meals */}
+                    <div>
+                        <FormLabel>Search Meals</FormLabel>
+                        <Input
+                            type="text"
+                            placeholder="Search by name or description..."
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                        />
+                    </div>
+
                     <div className="space-y-4">
                         <FormLabel>Select Meals (max 3)</FormLabel>
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                            {meals.map((meal) => (
-                                <div
-                                    key={meal.id}
-                                    className={`p-4 border rounded-lg cursor-pointer transition-colors ${
-                                        form.getValues('meal_ids').includes(meal.id)
-                                            ? 'border-primary bg-primary/10'
-                                            : 'border-border hover:border-primary/50'
-                                    }`}
-                                    onClick={() => handleMealSelection(meal.id)}
-                                >
-                                    <h3 className="font-medium">{meal.name}</h3>
-                                    <p className="text-sm text-muted-foreground">
-                                        {meal.description}
-                                    </p>
-                                    <p className="text-sm font-medium mt-2">
-                                        {meal.portion_sizes.medium.price.toFixed(2)} €
-                                    </p>
-                                </div>
-                            ))}
+                            {meals
+                                .filter((meal) =>
+                                    meal.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                                    meal.description.toLowerCase().includes(searchTerm.toLowerCase())
+                                )
+                                .map((meal) => (
+                                    <div
+                                        key={meal.id}
+                                        className={`p-4 border rounded-lg cursor-pointer transition-colors ${
+                                            form.getValues('meal_ids').includes(meal.id)
+                                                ? 'border-primary bg-primary/10'
+                                                : 'border-border hover:border-primary/50'
+                                        }`}
+                                        onClick={() => handleMealSelection(meal.id)}
+                                    >
+                                        <h3 className="font-medium">{meal.name}</h3>
+                                        <p className="text-sm text-muted-foreground">
+                                            {meal.description}
+                                        </p>
+                                        <p className="text-sm font-medium mt-2">
+                                            {meal.portion_sizes.medium.price.toFixed(2)} €
+                                        </p>
+                                    </div>
+                                ))}
                         </div>
                         <FormMessage />
                     </div>
@@ -188,4 +204,4 @@ export default function DailyMenuPage() {
             </Form>
         </div>
     );
-} 
+}
