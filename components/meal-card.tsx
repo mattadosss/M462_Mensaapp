@@ -51,14 +51,12 @@ export function MealCard({ meal, className = '' }: MealCardProps) {
                     <div>
                         <h4 className="font-medium mb-2">Ingredients</h4>
                         <div className="flex flex-wrap gap-2">
-                            {meal.ingredients.map((ingredient) => (
-                                <span
-                                    key={ingredient}
-                                    className="px-2 py-1 bg-gray-100 text-gray-800 rounded-full text-sm"
-                                >
+                            {meal.ingredients.map((ingredient, index) => (
+                                <span key={`${ingredient}-${index}`} className="px-2 py-1 bg-gray-100 text-gray-800 rounded-full text-sm">
                                     {ingredient}
                                 </span>
                             ))}
+
                         </div>
                     </div>
                 )}
