@@ -42,11 +42,11 @@ export default async function HomePage() {
     });
 
     return (
-        <div className="container mx-auto py-10">
+        <div className="container mx-auto py-10 flex flex-col items-center"> {/* Added flex, flex-col, and items-center */}
             <h1 className="text-3xl font-bold mb-6">Today's Menu</h1>
             <h2 className="text-xl font-semibold mb-4">{todayLabel}</h2>
             {meals.length > 0 ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8 w-full"> {/* Added w-full */}
                     {meals.map((meal) => (
                         <MealCard key={meal.id} meal={meal} />
                     ))}
