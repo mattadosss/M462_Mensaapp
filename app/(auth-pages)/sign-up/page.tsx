@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Link from "next/link";
 import { SmtpMessage } from "../smtp-message";
+import { AccountTypeSelect } from "@/components/account-type-select";
 
 export default async function Signup(props: {
   searchParams: Promise<Message>;
@@ -39,6 +40,8 @@ export default async function Signup(props: {
             minLength={6}
             required
           />
+          <Label htmlFor="accountType">Account Type</Label>
+          <AccountTypeSelect />
           <SubmitButton formAction={signUpAction} pendingText="Signing up...">
             Sign up
           </SubmitButton>
