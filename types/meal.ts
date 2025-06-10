@@ -4,9 +4,7 @@ export type PortionSize = {
 };
 
 export type PortionSizes = {
-    small: PortionSize;
-    medium: PortionSize;
-    large: PortionSize;
+    [key: string]: PortionSize;
 };
 
 export type Meal = {

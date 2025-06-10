@@ -1,8 +1,11 @@
-import { createClient } from '@/utils/supabase/server';
+'use client';
+
+import { createClient } from '@/utils/supabase/client';
 import { getNextWeekdays, formatDate } from '@/utils/date';
 import { DailyMenu } from '@/types/daily-menu';
 import { Meal } from '@/types/meal';
 import { MealCard } from '@/components/meal-card';
+import { useEffect, useState } from 'react';
 
 async function getWeeklyMenu() {
     try {
@@ -51,9 +54,13 @@ async function getWeeklyMenu() {
     }
 }
 
-export default async function MenuPage() {
-    const weeklyMenu = await getWeeklyMenu();
+export default function MenuPage() {
+    const [weeklyMenu, setWeeklyMenu] = useState<(DailyMenu & { meals: Meal[] })[]>([]);
     const weekdays = getNextWeekdays();
+
+    useEffect(() => {
+        getWeeklyMenu().then(setWeeklyMenu);
+    }, []);
 
     return (
         <div className="container mx-auto py-10">

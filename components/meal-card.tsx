@@ -1,11 +1,16 @@
+'use client';
+
 import { Meal } from '@/types/meal';
-import { AlertCircle } from 'lucide-react';
+import { AlertCircle, ShoppingCart } from 'lucide-react';
 import {
     Tooltip,
     TooltipContent,
     TooltipProvider,
     TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { Button } from "@/components/ui/button";
+import { useCart } from '@/lib/cart-context';
+import { useState } from 'react';
 
 interface MealCardProps {
     meal: Meal;
@@ -13,6 +18,9 @@ interface MealCardProps {
 }
 
 export function MealCard({ meal, className = '' }: MealCardProps) {
+    const { addToCart } = useCart();
+    const [selectedSize, setSelectedSize] = useState<string | null>(null);
+
     return (
         <div className={`border rounded-lg p-4 hover:shadow-md transition-shadow ${className}`}>
             {meal.image_url && (
@@ -36,7 +44,10 @@ export function MealCard({ meal, className = '' }: MealCardProps) {
                         {Object.entries(meal.portion_sizes).map(([size, { price, description }]) => (
                             <div
                                 key={size}
-                                className="border rounded p-2 text-center"
+                                className={`border rounded p-2 text-center cursor-pointer transition-colors ${
+                                    selectedSize === size ? 'border-blue-500 bg-blue-50' : ''
+                                }`}
+                                onClick={() => setSelectedSize(size)}
                             >
                                 <div className="text-sm font-medium capitalize">{size}</div>
                                 <div className="text-lg font-semibold">{price.toFixed(2)} €</div>
@@ -44,6 +55,15 @@ export function MealCard({ meal, className = '' }: MealCardProps) {
                             </div>
                         ))}
                     </div>
+                    {selectedSize && (
+                        <Button
+                            className="w-full mt-2"
+                            onClick={() => addToCart(meal, selectedSize)}
+                        >
+                            <ShoppingCart className="w-4 h-4 mr-2" />
+                            Add to Cart
+                        </Button>
+                    )}
                 </div>
 
                 {/* Ingredients */}
@@ -56,7 +76,6 @@ export function MealCard({ meal, className = '' }: MealCardProps) {
                                     {ingredient}
                                 </span>
                             ))}
-
                         </div>
                     </div>
                 )}
