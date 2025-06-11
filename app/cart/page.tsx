@@ -1,20 +1,29 @@
 'use client';
 
+import { useState } from 'react';
 import { useCart } from '@/lib/cart-context';
 import { Button } from '@/components/ui/button';
 import { Minus, Plus, Trash2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import CardDetailsInput from '@/components/CardDetailsInput';
 
 export default function CartPage() {
     const { items, removeFromCart, updateQuantity, totalPrice, clearCart } = useCart();
     const router = useRouter();
+    const [showCardDetails, setShowCardDetails] = useState(false);
 
-    const handleCheckout = async () => {
-        // Here you would typically integrate with a payment system
-        // For now, we'll just clear the cart and show a success message
+    const handleCheckout = () => {
+        setShowCardDetails(true);
+    };
+
+    const handlePaymentSuccess = () => {
         clearCart();
-        alert('Order placed successfully!');
-        router.push('/menu');
+        router.push('/success');
+        setShowCardDetails(false);
+    };
+
+    const handleCancelPayment = () => {
+        setShowCardDetails(false);
     };
 
     if (items.length === 0) {
@@ -27,6 +36,15 @@ export default function CartPage() {
                         Browse Menu
                     </Button>
                 </div>
+            </div>
+        );
+    }
+
+    if (showCardDetails) {
+        return (
+            <div className="container mx-auto py-10">
+                <h1 className="text-3xl font-bold mb-8 text-center">Complete Your Purchase</h1>
+                <CardDetailsInput onPaymentSuccess={handlePaymentSuccess} onCancel={handleCancelPayment} />
             </div>
         );
     }
