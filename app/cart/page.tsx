@@ -17,6 +17,8 @@ export default function CartPage() {
     };
 
     const handlePaymentSuccess = () => {
+        const existing = JSON.parse(localStorage.getItem('activeOrders') || '[]');
+        localStorage.setItem('activeOrders', JSON.stringify([...existing, ...items]));
         clearCart();
         router.push('/success');
         setShowCardDetails(false);
@@ -57,13 +59,13 @@ export default function CartPage() {
                 <div className="lg:col-span-2">
                     <div className="bg-white rounded-lg shadow-md p-6">
                         {items.map((item) => (
-                            <div key={`${item.meal.id}-${item.portionSize}`} className="border-b last:border-b-0 py-4">
+                            <div key={`${item.meal.id}-${item.orderTime}`} className="border-b last:border-b-0 py-4">
                                 <div className="flex justify-between items-start">
                                     <div>
                                         <h3 className="text-lg font-semibold">{item.meal.name}</h3>
-                                        <p className="text-gray-600 capitalize">{item.portionSize} Portion</p>
+                                        <p className="text-gray-600">{new Date(item.orderTime).toLocaleString()}</p>
                                         <p className="text-gray-600">
-                                            {item.meal.portion_sizes[item.portionSize].price.toFixed(2)} € each
+                                            {item.meal.portion_sizes.medium.price.toFixed(2)} € each
                                         </p>
                                     </div>
                                     <div className="flex items-center gap-4">
@@ -71,7 +73,7 @@ export default function CartPage() {
                                             <Button
                                                 variant="outline"
                                                 size="icon"
-                                                onClick={() => updateQuantity(item.meal.id, item.portionSize, item.quantity - 1)}
+                                                onClick={() => updateQuantity(item.meal.id, item.orderTime, item.quantity - 1)}
                                             >
                                                 <Minus className="w-4 h-4" />
                                             </Button>
@@ -79,7 +81,7 @@ export default function CartPage() {
                                             <Button
                                                 variant="outline"
                                                 size="icon"
-                                                onClick={() => updateQuantity(item.meal.id, item.portionSize, item.quantity + 1)}
+                                                onClick={() => updateQuantity(item.meal.id, item.orderTime, item.quantity + 1)}
                                             >
                                                 <Plus className="w-4 h-4" />
                                             </Button>
@@ -87,7 +89,7 @@ export default function CartPage() {
                                         <Button
                                             variant="ghost"
                                             size="icon"
-                                            onClick={() => removeFromCart(item.meal.id, item.portionSize)}
+                                            onClick={() => removeFromCart(item.meal.id, item.orderTime)}
                                         >
                                             <Trash2 className="w-4 h-4 text-red-500" />
                                         </Button>
