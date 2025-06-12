@@ -50,6 +50,9 @@ export default function HeaderAuth() {
               )}
             </Button>
           </Link>
+          <Link href="/orders">
+            <Button variant="ghost">Vermerkt</Button>
+          </Link>
           <Button variant="ghost" onClick={handleSignOut}>
             Sign Out
           </Button>

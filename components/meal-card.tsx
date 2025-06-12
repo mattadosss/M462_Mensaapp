@@ -19,7 +19,7 @@ interface MealCardProps {
 
 export function MealCard({ meal, className = '' }: MealCardProps) {
     const { addToCart } = useCart();
-    const [selectedSize, setSelectedSize] = useState<string | null>(null);
+    const [orderTime, setOrderTime] = useState<string>('');
 
     return (
         <div className={`border rounded-lg p-4 hover:shadow-md transition-shadow ${className}`}>
@@ -37,28 +37,24 @@ export function MealCard({ meal, className = '' }: MealCardProps) {
             <p className="text-gray-600 mb-3">{meal.description}</p>
             
             <div className="space-y-4">
-                {/* Portion Sizes */}
                 <div>
-                    <h4 className="font-medium mb-2">Portion Sizes</h4>
-                    <div className="grid grid-cols-3 gap-2">
-                        {Object.entries(meal.portion_sizes).map(([size, { price, description }]) => (
-                            <div
-                                key={size}
-                                className={`border rounded p-2 text-center cursor-pointer transition-colors ${
-                                    selectedSize === size ? 'border-blue-500 bg-blue-50' : ''
-                                }`}
-                                onClick={() => setSelectedSize(size)}
-                            >
-                                <div className="text-sm font-medium capitalize">{size}</div>
-                                <div className="text-lg font-semibold">{price.toFixed(2)} €</div>
-                                <div className="text-xs text-gray-500">{description}</div>
-                            </div>
-                        ))}
+                    <div className="flex items-center justify-between mb-2">
+                        <span className="font-medium">Price</span>
+                        <span className="font-semibold">{meal.portion_sizes.medium.price.toFixed(2)} €</span>
                     </div>
-                    {selectedSize && (
+                    <input
+                        type="datetime-local"
+                        className="border rounded w-full px-2 py-1 mb-2"
+                        value={orderTime}
+                        onChange={(e) => setOrderTime(e.target.value)}
+                    />
+                    {orderTime && (
                         <Button
-                            className="w-full mt-2"
-                            onClick={() => addToCart(meal, selectedSize)}
+                            className="w-full"
+                            onClick={() => {
+                                addToCart(meal, orderTime);
+                                setOrderTime('');
+                            }}
                         >
                             <ShoppingCart className="w-4 h-4 mr-2" />
                             Add to Cart
