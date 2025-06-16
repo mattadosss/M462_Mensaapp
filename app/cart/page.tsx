@@ -6,10 +6,14 @@ import { Button } from '@/components/ui/button';
 import { Minus, Plus, Trash2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import CardDetailsInput from '@/components/CardDetailsInput';
+import { useAccountType } from '@/lib/use-account-type';
+import { calculateDiscount } from '@/utils/discount';
+import { DiscountDisplay } from '@/components/discount-display';
 
 export default function CartPage() {
     const { items, removeFromCart, updateQuantity, totalPrice, clearCart } = useCart();
     const router = useRouter();
+    const accountType = useAccountType();
     const [showCardDetails, setShowCardDetails] = useState(false);
 
     const handleCheckout = () => {
@@ -27,6 +31,8 @@ export default function CartPage() {
     const handleCancelPayment = () => {
         setShowCardDetails(false);
     };
+
+    const discountCalc = calculateDiscount(totalPrice, accountType);
 
     if (items.length === 0) {
         return (
@@ -103,16 +109,7 @@ export default function CartPage() {
                 <div className="lg:col-span-1">
                     <div className="bg-white rounded-lg shadow-md p-6">
                         <h2 className="text-xl font-semibold mb-4">Order Summary</h2>
-                        <div className="space-y-2 mb-4">
-                            <div className="flex justify-between">
-                                <span>Subtotal</span>
-                                <span>{totalPrice.toFixed(2)} €</span>
-                            </div>
-                            <div className="flex justify-between font-semibold text-lg">
-                                <span>Total</span>
-                                <span>{totalPrice.toFixed(2)} €</span>
-                            </div>
-                        </div>
+                        <DiscountDisplay calculation={discountCalc} className="mb-4" />
                         <Button
                             className="w-full"
                             onClick={handleCheckout}
