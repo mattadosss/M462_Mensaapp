@@ -36,6 +36,7 @@ const formSchema = z.object({
   email: z.string().email("Please enter a valid email address"),
   password: z.string().min(6, "Password must be at least 6 characters"),
   role: z.enum(["user", "admin"]).optional(),
+  accountType: z.enum(["Student", "Teacher", "External"]),
 });
 
 export default function AuthPage() {
@@ -49,6 +50,7 @@ export default function AuthPage() {
       email: "",
       password: "",
       role: "user",
+      accountType: "Student",
     },
   });
 
@@ -69,6 +71,9 @@ export default function AuthPage() {
     formData.append("password", data.password);
     if (isSignUp && data.role) {
       formData.append("role", data.role);
+    }
+    if (isSignUp && data.accountType) {
+      formData.append("accountType", data.accountType);
     }
     
     try {
@@ -138,7 +143,7 @@ export default function AuthPage() {
                   name="role"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Account Type</FormLabel>
+                      <FormLabel>Role</FormLabel>
                       <Select
                         onValueChange={field.onChange}
                         defaultValue={field.value}
@@ -151,6 +156,33 @@ export default function AuthPage() {
                         <SelectContent>
                           <SelectItem value="user">Normal User</SelectItem>
                           <SelectItem value="admin">Admin</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              )}
+              {isSignUp && (
+                <FormField
+                  control={form.control}
+                  name="accountType"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Account Type</FormLabel>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                      >
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select account type" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="Student">Schüler</SelectItem>
+                          <SelectItem value="Teacher">Lehrer</SelectItem>
+                          <SelectItem value="External">Extern</SelectItem>
                         </SelectContent>
                       </Select>
                       <FormMessage />

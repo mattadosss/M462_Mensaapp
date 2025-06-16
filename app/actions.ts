@@ -1,6 +1,7 @@
 "use server";
 
 import { createClient } from "@/utils/supabase/server";
+import { AccountType } from "@/types/user";
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 
@@ -51,6 +52,7 @@ export async function signUpAction(state: { error: string | null }, formData: Fo
   const email = formData.get("email") as string;
   const password = formData.get("password") as string;
   const role = formData.get("role") as string || "user";
+  const accountType = formData.get("accountType") as AccountType | null;
 
   if (!email || !password) {
     return {
@@ -66,6 +68,7 @@ export async function signUpAction(state: { error: string | null }, formData: Fo
       options: {
         data: {
           role: role,
+          account_type: accountType ?? 'External',
         },
       },
     });
@@ -80,6 +83,15 @@ export async function signUpAction(state: { error: string | null }, formData: Fo
       return {
         error: "Failed to create user",
       };
+    }
+
+    if (accountType) {
+      const { error: profileError } = await supabase
+        .from('user_profiles')
+        .insert({ user_id: user.id, account_type: accountType });
+      if (profileError) {
+        console.error('Error inserting user profile:', profileError);
+      }
     }
 
     revalidatePath("/");
