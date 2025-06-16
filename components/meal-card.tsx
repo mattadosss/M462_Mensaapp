@@ -21,6 +21,18 @@ export function MealCard({ meal, className = '' }: MealCardProps) {
     const { addToCart } = useCart();
     const [orderTime, setOrderTime] = useState<string>('');
 
+    const handleAddToCart = () => {
+        if (!orderTime) {
+            // If no time is selected, use current time
+            const now = new Date();
+            now.setMinutes(now.getMinutes() - now.getTimezoneOffset()); // Adjust for timezone
+            addToCart(meal, now.toISOString().slice(0, 16));
+        } else {
+            addToCart(meal, orderTime);
+            setOrderTime('');
+        }
+    };
+
     return (
         <div className={`border rounded-lg p-4 hover:shadow-md transition-shadow ${className}`}>
             {meal.image_url && (
@@ -48,18 +60,13 @@ export function MealCard({ meal, className = '' }: MealCardProps) {
                         value={orderTime}
                         onChange={(e) => setOrderTime(e.target.value)}
                     />
-                    {orderTime && (
-                        <Button
-                            className="w-full"
-                            onClick={() => {
-                                addToCart(meal, orderTime);
-                                setOrderTime('');
-                            }}
-                        >
-                            <ShoppingCart className="w-4 h-4 mr-2" />
-                            Add to Cart
-                        </Button>
-                    )}
+                    <Button
+                        className="w-full"
+                        onClick={handleAddToCart}
+                    >
+                        <ShoppingCart className="w-4 h-4 mr-2" />
+                        Add to Cart
+                    </Button>
                 </div>
 
                 {/* Ingredients */}
