@@ -9,6 +9,7 @@ import CardDetailsInput from '@/components/CardDetailsInput';
 import { useAccountType } from '@/lib/use-account-type';
 import { calculateDiscount } from '@/utils/discount';
 import { DiscountDisplay } from '@/components/discount-display';
+import { createClient } from '@/utils/supabase/client';
 
 export default function CartPage() {
     const { items, removeFromCart, updateQuantity, totalPrice, clearCart } = useCart();
@@ -20,12 +21,37 @@ export default function CartPage() {
         setShowCardDetails(true);
     };
 
-    const handlePaymentSuccess = () => {
-        const existing = JSON.parse(localStorage.getItem('activeOrders') || '[]');
-        localStorage.setItem('activeOrders', JSON.stringify([...existing, ...items]));
-        clearCart();
-        router.push('/success');
-        setShowCardDetails(false);
+    const handlePaymentSuccess = async () => {
+        try {
+            const supabase = createClient();
+            
+            // Get the current user
+            const { data: { user } } = await supabase.auth.getUser();
+            if (!user) {
+                throw new Error('User not authenticated');
+            }
+
+            // Save each item as an order
+            const orderPromises = items.map(item => 
+                supabase.from('orders').insert({
+                    user_id: user.id,
+                    meal_id: item.meal.id,
+                    quantity: item.quantity,
+                    order_time: item.orderTime,
+                    status: 'pending'
+                })
+            );
+
+            await Promise.all(orderPromises);
+            
+            // Clear the cart and redirect
+            clearCart();
+            router.push('/success');
+            setShowCardDetails(false);
+        } catch (error) {
+            console.error('Error saving orders:', error);
+            alert('Failed to save orders. Please try again.');
+        }
     };
 
     const handleCancelPayment = () => {

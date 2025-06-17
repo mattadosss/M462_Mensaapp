@@ -1,3 +1,4 @@
+DROP TABLE IF EXISTS orders CASCADE;
 -- Create orders table
 CREATE TABLE orders (
     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
@@ -19,26 +20,13 @@ CREATE INDEX idx_orders_status ON orders(status);
 -- Enable Row Level Security (RLS)
 ALTER TABLE orders ENABLE ROW LEVEL SECURITY;
 
--- Create policies for orders
--- Users can only see their own orders
-CREATE POLICY "Users can view their own orders"
+-- Create policy to allow all operations for authenticated users
+CREATE POLICY "Allow all operations for authenticated users"
     ON orders
-    FOR SELECT
-    USING (auth.uid() = user_id);
-
--- Users can only insert their own orders
-CREATE POLICY "Users can insert their own orders"
-    ON orders
-    FOR INSERT
-    WITH CHECK (auth.uid() = user_id);
-
--- Only admins can update order status
-CREATE POLICY "Admins can update order status"
-    ON orders
-    FOR UPDATE
-    USING (auth.uid() IN (
-        SELECT user_id FROM user_roles WHERE role = 'admin'
-    ));
+    FOR ALL
+    TO authenticated
+    USING (true)
+    WITH CHECK (true);
 
 -- Create trigger to automatically update updated_at
 CREATE TRIGGER update_orders_updated_at
