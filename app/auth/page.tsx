@@ -33,6 +33,9 @@ import { useEffect, useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import { createClient } from "@/utils/supabase/client";
 
+// Neue Icons importieren
+import { UtensilsCrossed, ChefHat, Soup, Salad } from "lucide-react";
+
 const formSchema = z.object({
   email: z.string().email("Please enter a valid email address"),
   password: z.string().min(6, "Password must be at least 6 characters"),
@@ -121,8 +124,15 @@ export default function AuthPage() {
               </p>
             </div>
         )}
-        <Card className="w-[350px] bg-white text-black">
-          <CardHeader>
+        <Card className="w-[350px] bg-white text-black shadow-xl">
+          <CardHeader className="flex flex-col items-center">
+            {/* Piktogramme hinzufügen */}
+            <div className="flex space-x-2 text-green-600 mb-2">
+              <UtensilsCrossed size={24} />
+              <ChefHat size={24} />
+              <Soup size={24} />
+              <Salad size={24} />
+            </div>
             <CardTitle>{isSignUp ? "Sign Up" : "Sign In"}</CardTitle>
             <CardDescription>
               {isSignUp
@@ -168,57 +178,57 @@ export default function AuthPage() {
                     )}
                 />
                 {isSignUp && (
-                    <FormField
-                        control={form.control}
-                        name="role"
-                        render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Role</FormLabel>
-                              <Select
-                                  onValueChange={field.onChange}
-                                  defaultValue={field.value}
-                              >
-                                <FormControl>
-                                  <SelectTrigger>
-                                    <SelectValue placeholder="Select role" />
-                                  </SelectTrigger>
-                                </FormControl>
-                                <SelectContent>
-                                  <SelectItem value="user">Normal User</SelectItem>
-                                  <SelectItem value="admin">Admin</SelectItem>
-                                </SelectContent>
-                              </Select>
-                              <FormMessage />
-                            </FormItem>
-                        )}
-                    />
-                )}
-                {isSignUp && (
-                    <FormField
-                        control={form.control}
-                        name="accountType"
-                        render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Account Type</FormLabel>
-                              <Select
-                                  onValueChange={field.onChange}
-                                  defaultValue={field.value}
-                              >
-                                <FormControl>
-                                  <SelectTrigger>
-                                    <SelectValue placeholder="Select account type" />
-                                  </SelectTrigger>
-                                </FormControl>
-                                <SelectContent>
-                                  <SelectItem value="Student">Schüler</SelectItem>
-                                  <SelectItem value="Teacher">Lehrer</SelectItem>
-                                  <SelectItem value="External">Extern</SelectItem>
-                                </SelectContent>
-                              </Select>
-                              <FormMessage />
-                            </FormItem>
-                        )}
-                    />
+                    <>
+                      <FormField
+                          control={form.control}
+                          name="role"
+                          render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>Role</FormLabel>
+                                <Select
+                                    onValueChange={field.onChange}
+                                    defaultValue={field.value}
+                                >
+                                  <FormControl>
+                                    <SelectTrigger>
+                                      <SelectValue placeholder="Select role" />
+                                    </SelectTrigger>
+                                  </FormControl>
+                                  <SelectContent>
+                                    <SelectItem value="user">Normal User</SelectItem>
+                                    <SelectItem value="admin">Admin</SelectItem>
+                                  </SelectContent>
+                                </Select>
+                                <FormMessage />
+                              </FormItem>
+                          )}
+                      />
+                      <FormField
+                          control={form.control}
+                          name="accountType"
+                          render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>Account Type</FormLabel>
+                                <Select
+                                    onValueChange={field.onChange}
+                                    defaultValue={field.value}
+                                >
+                                  <FormControl>
+                                    <SelectTrigger>
+                                      <SelectValue placeholder="Select account type" />
+                                    </SelectTrigger>
+                                  </FormControl>
+                                  <SelectContent>
+                                    <SelectItem value="Student">Schüler</SelectItem>
+                                    <SelectItem value="Teacher">Lehrer</SelectItem>
+                                    <SelectItem value="External">Extern</SelectItem>
+                                  </SelectContent>
+                                </Select>
+                                <FormMessage />
+                              </FormItem>
+                          )}
+                      />
+                    </>
                 )}
                 <Button type="submit" className="w-full">
                   {isSignUp ? "Sign Up" : "Sign In"}
