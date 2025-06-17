@@ -56,7 +56,7 @@ export default async function HomePage() {
             )}
             <div className="flex justify-center">
                 <Link href="/menu">
-                    <span className="inline-block px-8 py-3 bg-blue-600 text-white rounded-lg text-lg font-semibold hover:bg-blue-700 transition">View Full Weekly Menu</span>
+                    <span className="inline-block px-8 py-3 bg-[#6ca12b] text-white rounded-lg text-lg font-semibold hover:bg-[#5a8e22] transition">View Full Weekly Menu</span>
                 </Link>
             </div>
         </div>
