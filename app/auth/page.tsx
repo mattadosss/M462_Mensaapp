@@ -31,7 +31,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { useEffect, useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
-import { createClient } from '@/utils/supabase/client';
+import { createClient } from "@/utils/supabase/client";
 
 const formSchema = z.object({
   email: z.string().email("Please enter a valid email address"),
@@ -57,16 +57,19 @@ export default function AuthPage() {
 
   useEffect(() => {
     const supabase = createClient();
-    const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
-      if (event === 'SIGNED_UP') {
-        setIsSignUp(false); // Wechselt zur Anmeldeansicht nach erfolgreicher Registrierung
-        toast({
-            title: "Registrierung erfolgreich!",
-            description: "Bitte melden Sie sich jetzt mit Ihren neuen Zugangsdaten an.",
-            variant: "default",
-        });
-      }
-    });
+    const { data: authListener } = supabase.auth.onAuthStateChange(
+        (event, session) => {
+          if (event === "SIGNED_UP") {
+            setIsSignUp(false);
+            toast({
+              title: "Registrierung erfolgreich!",
+              description:
+                  "Bitte melden Sie sich jetzt mit Ihren neuen Zugangsdaten an.",
+              variant: "default",
+            });
+          }
+        }
+    );
 
     return () => {
       authListener.subscription.unsubscribe();
@@ -94,7 +97,7 @@ export default function AuthPage() {
     if (isSignUp && data.accountType) {
       formData.append("accountType", data.accountType);
     }
-    
+
     try {
       const action = isSignUp ? signUpAction : signInAction;
       const result = await action({ error: null }, formData);
@@ -109,124 +112,132 @@ export default function AuthPage() {
   };
 
   return (
-    <div className="container flex h-screen w-screen flex-col items-center justify-center">
-      <Card className="w-[350px]">
-        <CardHeader>
-          <CardTitle>{isSignUp ? "Sign Up" : "Sign In"}</CardTitle>
-          <CardDescription>
-            {isSignUp
-              ? "Create a new account"
-              : "Enter your credentials to access your account"}
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-              <FormField
-                control={form.control}
-                name="email"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Email</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="email"
-                        placeholder="Enter your email"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="password"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Password</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="password"
-                        placeholder="Enter your password"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              {isSignUp && (
+      <div className="flex flex-col items-center justify-center min-h-[calc(100vh-64px)] w-full px-4">
+        {!isSignUp && (
+            <div className="mb-6 text-center">
+              <h1 className="text-4xl font-bold">Log In</h1>
+              <p className="text-sm text-gray-400 mt-2">
+                Please sign in to your existing account.
+              </p>
+            </div>
+        )}
+        <Card className="w-[350px] bg-white text-black">
+          <CardHeader>
+            <CardTitle>{isSignUp ? "Sign Up" : "Sign In"}</CardTitle>
+            <CardDescription>
+              {isSignUp
+                  ? "Create a new account"
+                  : "Enter your credentials to access your account"}
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
                 <FormField
-                  control={form.control}
-                  name="role"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Role</FormLabel>
-                      <Select
-                        onValueChange={field.onChange}
-                        defaultValue={field.value}
-                      >
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select account type" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          <SelectItem value="user">Normal User</SelectItem>
-                          <SelectItem value="admin">Admin</SelectItem>
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
+                    control={form.control}
+                    name="email"
+                    render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Email</FormLabel>
+                          <FormControl>
+                            <Input
+                                type="email"
+                                placeholder="Enter your email"
+                                {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                    )}
                 />
-              )}
-              {isSignUp && (
                 <FormField
-                  control={form.control}
-                  name="accountType"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Account Type</FormLabel>
-                      <Select
-                        onValueChange={field.onChange}
-                        defaultValue={field.value}
-                      >
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select account type" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          <SelectItem value="Student">Schüler</SelectItem>
-                          <SelectItem value="Teacher">Lehrer</SelectItem>
-                          <SelectItem value="External">Extern</SelectItem>
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
+                    control={form.control}
+                    name="password"
+                    render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Password</FormLabel>
+                          <FormControl>
+                            <Input
+                                type="password"
+                                placeholder="Enter your password"
+                                {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                    )}
                 />
-              )}
-              <Button type="submit" className="w-full">
-                {isSignUp ? "Sign Up" : "Sign In"}
-              </Button>
-            </form>
-          </Form>
-        </CardContent>
-        <CardFooter className="flex flex-col space-y-4">
-          <div className="text-sm text-muted-foreground">
-            {isSignUp ? "Already have an account?" : "Don't have an account?"}{" "}
-            <button
-              onClick={() => setIsSignUp(!isSignUp)}
-              className="text-primary hover:underline"
-            >
-              {isSignUp ? "Sign In" : "Sign Up"}
-            </button>
-          </div>
-        </CardFooter>
-      </Card>
-    </div>
+                {isSignUp && (
+                    <FormField
+                        control={form.control}
+                        name="role"
+                        render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Role</FormLabel>
+                              <Select
+                                  onValueChange={field.onChange}
+                                  defaultValue={field.value}
+                              >
+                                <FormControl>
+                                  <SelectTrigger>
+                                    <SelectValue placeholder="Select role" />
+                                  </SelectTrigger>
+                                </FormControl>
+                                <SelectContent>
+                                  <SelectItem value="user">Normal User</SelectItem>
+                                  <SelectItem value="admin">Admin</SelectItem>
+                                </SelectContent>
+                              </Select>
+                              <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                )}
+                {isSignUp && (
+                    <FormField
+                        control={form.control}
+                        name="accountType"
+                        render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Account Type</FormLabel>
+                              <Select
+                                  onValueChange={field.onChange}
+                                  defaultValue={field.value}
+                              >
+                                <FormControl>
+                                  <SelectTrigger>
+                                    <SelectValue placeholder="Select account type" />
+                                  </SelectTrigger>
+                                </FormControl>
+                                <SelectContent>
+                                  <SelectItem value="Student">Schüler</SelectItem>
+                                  <SelectItem value="Teacher">Lehrer</SelectItem>
+                                  <SelectItem value="External">Extern</SelectItem>
+                                </SelectContent>
+                              </Select>
+                              <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                )}
+                <Button type="submit" className="w-full">
+                  {isSignUp ? "Sign Up" : "Sign In"}
+                </Button>
+              </form>
+            </Form>
+          </CardContent>
+          <CardFooter className="flex flex-col space-y-4">
+            <div className="text-sm text-muted-foreground">
+              {isSignUp ? "Already have an account?" : "Don't have an account?"}{" "}
+              <button
+                  onClick={() => setIsSignUp(!isSignUp)}
+                  className="text-primary hover:underline"
+              >
+                {isSignUp ? "Sign In" : "Sign Up"}
+              </button>
+            </div>
+          </CardFooter>
+        </Card>
+      </div>
   );
-} 
+}
