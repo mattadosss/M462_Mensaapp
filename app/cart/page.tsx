@@ -1,13 +1,13 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useCart } from '@/lib/cart-context';
 import { Button } from '@/components/ui/button';
 import { Minus, Plus, Trash2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import CardDetailsInput from '@/components/CardDetailsInput';
 import { useAccountType } from '@/lib/use-account-type';
-import { calculateDiscount } from '@/utils/discount';
+import { calculateDiscountByAccountType } from '@/utils/discount-enhanced';
 import { DiscountDisplay } from '@/components/discount-display';
 
 export default function CartPage() {
@@ -15,6 +15,36 @@ export default function CartPage() {
     const router = useRouter();
     const accountType = useAccountType();
     const [showCardDetails, setShowCardDetails] = useState(false);
+    const [discountCalc, setDiscountCalc] = useState(null);
+
+    // Rabattberechnung mit neuem System
+    useEffect(() => {
+        const calculateDiscount = async () => {
+            try {
+                const calc = await calculateDiscountByAccountType(totalPrice, accountType);
+                // Format für bestehende DiscountDisplay Komponente anpassen
+                setDiscountCalc({
+                    subtotal: calc.originalPrice,
+                    discountAmount: calc.discountAmount,
+                    finalTotal: calc.finalPrice,
+                    discountPercentage: calc.discountPercentage
+                });
+            } catch (error) {
+                console.error('Error calculating discount:', error);
+                // Fallback ohne Rabatt
+                setDiscountCalc({
+                    subtotal: totalPrice,
+                    discountAmount: 0,
+                    finalTotal: totalPrice,
+                    discountPercentage: 0
+                });
+            }
+        };
+
+        if (totalPrice > 0) {
+            calculateDiscount();
+        }
+    }, [totalPrice, accountType]);
 
     const handleCheckout = () => {
         setShowCardDetails(true);
@@ -31,8 +61,6 @@ export default function CartPage() {
     const handleCancelPayment = () => {
         setShowCardDetails(false);
     };
-
-    const discountCalc = calculateDiscount(totalPrice, accountType);
 
     if (items.length === 0) {
         return (

@@ -31,6 +31,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { useEffect, useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
+import { createClient } from '@/utils/supabase/client';
 
 const formSchema = z.object({
   email: z.string().email("Please enter a valid email address"),
@@ -53,6 +54,24 @@ export default function AuthPage() {
       accountType: "Student",
     },
   });
+
+  useEffect(() => {
+    const supabase = createClient();
+    const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === 'SIGNED_UP') {
+        setIsSignUp(false); // Wechselt zur Anmeldeansicht nach erfolgreicher Registrierung
+        toast({
+            title: "Registrierung erfolgreich!",
+            description: "Bitte melden Sie sich jetzt mit Ihren neuen Zugangsdaten an.",
+            variant: "default",
+        });
+      }
+    });
+
+    return () => {
+      authListener.subscription.unsubscribe();
+    };
+  }, [toast]);
 
   useEffect(() => {
     if (error) {

@@ -88,7 +88,11 @@ export async function signUpAction(state: { error: string | null }, formData: Fo
     if (accountType) {
       const { error: profileError } = await supabase
         .from('user_profiles')
-        .insert({ user_id: user.id, account_type: accountType });
+        .insert({ 
+          user_id: user.id, 
+          account_type: accountType,
+          role: role
+        });
       if (profileError) {
         console.error('Error inserting user profile:', profileError);
       }
