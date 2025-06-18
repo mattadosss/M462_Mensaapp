@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import { usePathname } from "next/navigation";
 import { CartProvider } from "@/lib/cart-context";
@@ -10,6 +10,7 @@ import { EnvVarWarning } from "@/components/env-var-warning";
 import HeaderAuth from "@/components/header-auth";
 import { hasEnvVars } from "@/utils/supabase/check-env-vars";
 import Link from "next/link";
+import { useState } from "react";
 
 interface LayoutContentProps {
   children: React.ReactNode;
@@ -18,6 +19,15 @@ interface LayoutContentProps {
 export function LayoutContent({ children }: LayoutContentProps) {
   const pathname = usePathname();
   const isAuthPage = pathname === '/auth';
+  const [isLoading, setIsLoading] = useState<string | null>(null);
+
+  const handleNavigation = (path: string) => {
+    setIsLoading(path);
+    // Simuliere eine kurze Verzögerung für bessere UX
+    setTimeout(() => {
+      window.location.href = path;
+    }, 100);
+  };
 
   return (
     <CartProvider>
@@ -35,25 +45,55 @@ export function LayoutContent({ children }: LayoutContentProps) {
                 </SheetTrigger>
                 <SheetContent side="left" className="w-[300px] sm:w-[400px]">
                   <nav className="flex flex-col gap-4 mt-8">
-                    <Link href="/" className="text-lg font-semibold hover:text-primary transition-colors">
+                    <Button 
+                      variant="ghost" 
+                      className="justify-start text-lg font-semibold hover:text-primary transition-colors"
+                      onClick={() => handleNavigation('/')}
+                      isLoading={isLoading === '/'}
+                      loadingText="Lade..."
+                    >
                       Home
-                    </Link>
-                    <Link href="/menu" className="text-lg font-semibold hover:text-primary transition-colors">
+                    </Button>
+                    <Button 
+                      variant="ghost" 
+                      className="justify-start text-lg font-semibold hover:text-primary transition-colors"
+                      onClick={() => handleNavigation('/menu')}
+                      isLoading={isLoading === '/menu'}
+                      loadingText="Lade..."
+                    >
                       Menu
-                    </Link>
-                    <Link href="/cart" className="text-lg font-semibold hover:text-primary transition-colors">
+                    </Button>
+                    <Button 
+                      variant="ghost" 
+                      className="justify-start text-lg font-semibold hover:text-primary transition-colors"
+                      onClick={() => handleNavigation('/cart')}
+                      isLoading={isLoading === '/cart'}
+                      loadingText="Lade..."
+                    >
                       Cart
-                    </Link>
-                    <Link href="/orders" className="text-lg font-semibold hover:text-primary transition-colors">
+                    </Button>
+                    <Button 
+                      variant="ghost" 
+                      className="justify-start text-lg font-semibold hover:text-primary transition-colors"
+                      onClick={() => handleNavigation('/orders')}
+                      isLoading={isLoading === '/orders'}
+                      loadingText="Lade..."
+                    >
                       Orders
-                    </Link>
+                    </Button>
                     {!hasEnvVars ? <EnvVarWarning /> : <HeaderAuth />}
                   </nav>
                 </SheetContent>
               </Sheet>
-              <Link href="/" className="text-xl font-bold text-gray-900 hover:text-gray-700 transition-colors">
+              <Button 
+                variant="ghost" 
+                className="text-xl font-bold text-gray-900 hover:text-gray-700 transition-colors"
+                onClick={() => handleNavigation('/')}
+                isLoading={isLoading === '/'}
+                loadingText="Lade..."
+              >
                 Mensa
-              </Link>
+              </Button>
             </div>
 
             {/* Right side - Auth and user actions */}
@@ -73,22 +113,46 @@ export function LayoutContent({ children }: LayoutContentProps) {
         {/* Mobile Bottom Navigation */}
         <nav className="fixed bottom-0 left-0 right-0 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-t md:hidden">
           <div className="flex justify-around items-center h-16">
-            <Link href="/" className="flex flex-col items-center text-xs">
+            <Button 
+              variant="ghost" 
+              className="flex flex-col items-center text-xs"
+              onClick={() => handleNavigation('/')}
+              isLoading={isLoading === '/'}
+              loadingText="Lade..."
+            >
               <span className="text-lg">🏠</span>
               <span>Home</span>
-            </Link>
-            <Link href="/menu" className="flex flex-col items-center text-xs">
+            </Button>
+            <Button 
+              variant="ghost" 
+              className="flex flex-col items-center text-xs"
+              onClick={() => handleNavigation('/menu')}
+              isLoading={isLoading === '/menu'}
+              loadingText="Lade..."
+            >
               <span className="text-lg">🍽️</span>
               <span>Menu</span>
-            </Link>
-            <Link href="/cart" className="flex flex-col items-center text-xs">
+            </Button>
+            <Button 
+              variant="ghost" 
+              className="flex flex-col items-center text-xs"
+              onClick={() => handleNavigation('/cart')}
+              isLoading={isLoading === '/cart'}
+              loadingText="Lade..."
+            >
               <span className="text-lg">🛒</span>
               <span>Cart</span>
-            </Link>
-            <Link href="/orders" className="flex flex-col items-center text-xs">
+            </Button>
+            <Button 
+              variant="ghost" 
+              className="flex flex-col items-center text-xs"
+              onClick={() => handleNavigation('/orders')}
+              isLoading={isLoading === '/orders'}
+              loadingText="Lade..."
+            >
               <span className="text-lg">📋</span>
               <span>Orders</span>
-            </Link>
+            </Button>
             <AdminLink />
           </div>
         </nav>

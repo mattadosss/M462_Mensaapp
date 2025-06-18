@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import { createClient } from '@/utils/supabase/client';
 import { useRouter } from 'next/navigation';
@@ -15,6 +15,7 @@ export default function HeaderAuth() {
   const { totalItems } = useCart();
   const [user, setUser] = useState<any>(null);
   const accountType = useAccountType();
+  const [isLoading, setIsLoading] = useState<string | null>(null);
 
   useEffect(() => {
     const getUser = async () => {
@@ -33,9 +34,24 @@ export default function HeaderAuth() {
     };
   }, [supabase.auth]);
 
+  const handleNavigation = (path: string) => {
+    setIsLoading(path);
+    // Simuliere eine kurze Verzögerung für bessere UX
+    setTimeout(() => {
+      window.location.href = path;
+    }, 100);
+  };
+
   const handleSignOut = async () => {
-    await supabase.auth.signOut();
-    router.refresh();
+    setIsLoading('signout');
+    try {
+      await supabase.auth.signOut();
+      window.location.href = '/';
+    } catch (error) {
+      console.error('Error signing out:', error);
+    } finally {
+      setIsLoading(null);
+    }
   };
 
   return (
@@ -54,27 +70,49 @@ export default function HeaderAuth() {
             </Button>
           </Link>
           {user.user_metadata?.role === 'admin' && (
-            <Link href="/admin">
-              <Button variant="ghost" size="sm" className="hidden sm:inline-flex h-8 px-3 text-sm font-medium">
-                Admin
-              </Button>
-            </Link>
-          )}
-          <Link href="/orders">
-            <Button variant="ghost" size="sm" className="hidden sm:inline-flex h-8 px-3 text-sm font-medium">
-              Your Order
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              className="hidden sm:inline-flex h-8 px-3 text-sm font-medium"
+              onClick={() => handleNavigation('/admin')}
+              isLoading={isLoading === '/admin'}
+              loadingText="Lade..."
+            >
+              Admin
             </Button>
-          </Link>
-          <Button variant="outline" size="sm" onClick={handleSignOut} className="h-8 px-3 text-sm font-medium">
+          )}
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            className="hidden sm:inline-flex h-8 px-3 text-sm font-medium"
+            onClick={() => handleNavigation('/orders')}
+            isLoading={isLoading === '/orders'}
+            loadingText="Lade..."
+          >
+            Your Order
+          </Button>
+          <Button 
+            variant="outline" 
+            size="sm" 
+            onClick={handleSignOut} 
+            className="h-8 px-3 text-sm font-medium"
+            isLoading={isLoading === 'signout'}
+            loadingText="Abmelde..."
+          >
             Sign Out
           </Button>
         </>
       ) : (
-        <Link href="/auth">
-          <Button variant="default" size="sm" className="h-8 px-4 text-sm font-medium">
-            Sign In
-          </Button>
-        </Link>
+        <Button 
+          variant="default" 
+          size="sm" 
+          className="h-8 px-4 text-sm font-medium"
+          onClick={() => handleNavigation('/auth')}
+          isLoading={isLoading === '/auth'}
+          loadingText="Lade..."
+        >
+          Sign In
+        </Button>
       )}
     </div>
   );
