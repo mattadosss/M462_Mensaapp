@@ -92,23 +92,6 @@ export function LayoutContent({ children }: LayoutContentProps) {
             <AdminLink />
           </div>
         </nav>
-
-        {/* Footer - Only visible on desktop and not on auth page */}
-        {!isAuthPage && (
-          <footer className="hidden lg:flex w-full items-center justify-center border-t mx-auto text-center text-xs gap-8 py-8">
-            <p>
-              Powered by{" "}
-              <a
-                href="https://supabase.com/?utm_source=create-next-app&utm_medium=template&utm_term=nextjs"
-                target="_blank"
-                className="font-bold hover:underline"
-                rel="noreferrer"
-              >
-                Supabase
-              </a>
-            </p>
-          </footer>
-        )}
       </main>
     </CartProvider>
   );
