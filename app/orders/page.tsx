@@ -21,6 +21,22 @@ interface Order {
     status: string;
 }
 
+interface OrderWithMeal {
+    id: string;
+    quantity: number;
+    order_time: string;
+    status: string;
+    meal_id: string;
+    meals: {
+        name: string;
+        portion_sizes: {
+            medium: {
+                price: number;
+            };
+        };
+    };
+}
+
 export default function OrdersPage() {
     const [orders, setOrders] = useState<Order[]>([]);
     const [loading, setLoading] = useState(true);
@@ -37,7 +53,7 @@ export default function OrdersPage() {
                     throw new Error('User not authenticated');
                 }
 
-                // Fetch orders with meal details
+                // Fetch orders with meal details, excluding deleted orders
                 const { data, error } = await supabase
                     .from('orders')
                     .select(`
@@ -45,24 +61,25 @@ export default function OrdersPage() {
                         quantity,
                         order_time,
                         status,
-                        meals (
+                        meal_id,
+                        meals!inner (
                             name,
-                            price,
-                            image_url
+                            portion_sizes
                         )
                     `)
                     .eq('user_id', user.id)
+                    .neq('status', 'deleted')
                     .order('order_time', { ascending: false });
 
                 if (error) throw error;
 
                 // Transform the data to match our Order interface
-                const transformedOrders: Order[] = data.map(order => ({
+                const transformedOrders: Order[] = (data as OrderWithMeal[]).map(order => ({
                     id: order.id,
                     meal: {
                         name: order.meals.name,
-                        price: order.meals.price,
-                        image_url: order.meals.image_url
+                        price: order.meals.portion_sizes.medium.price,
+                        image_url: '' // We'll need to add image_url to the meals table if needed
                     },
                     quantity: order.quantity,
                     order_time: order.order_time,
@@ -106,7 +123,7 @@ export default function OrdersPage() {
                         <CardHeader>
                             <div className="flex justify-between items-start">
                                 <CardTitle>{order.meal.name}</CardTitle>
-                                <Badge variant={order.status === 'pending' ? 'default' : 'secondary'}>
+                                <Badge variant={order.status === 'pending' ? 'default' : 'outline'}>
                                     {order.status}
                                 </Badge>
                             </div>
