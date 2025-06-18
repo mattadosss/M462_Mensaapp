@@ -47,6 +47,7 @@ export default function AuthPage() {
   const { toast } = useToast();
   const [isSignUp, setIsSignUp] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -91,6 +92,7 @@ export default function AuthPage() {
   }, [error, toast]);
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
+    setIsLoading(true);
     const formData = new FormData();
     formData.append("email", data.email);
     formData.append("password", data.password);
@@ -106,11 +108,13 @@ export default function AuthPage() {
       const result = await action({ error: null }, formData);
       if (result?.error) {
         setError(result.error);
-      } else if (result?.success && result?.redirectTo) {
+      } else if (result?.redirectTo) {
         window.location.href = result.redirectTo;
       }
     } catch (err) {
       setError("An unexpected error occurred. Please try again.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -230,8 +234,13 @@ export default function AuthPage() {
                       />
                     </>
                 )}
-                <Button type="submit" className="w-full">
-                  {isSignUp ? "Sign Up" : "Sign In"}
+                <Button 
+                  type="submit" 
+                  className="w-full"
+                  isLoading={isLoading}
+                  loadingText={isSignUp ? "Registriere..." : "Anmelde..."}
+                >
+                  {isSignUp ? "Registrieren" : "Anmelden"}
                 </Button>
               </form>
             </Form>
