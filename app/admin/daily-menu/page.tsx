@@ -21,12 +21,26 @@ const dailyMenuSchema = z.object({
 
 type DailyMenuFormValues = z.infer<typeof dailyMenuSchema>;
 
+// Hilfsfunktion für die nächsten 6 Tage ab gewähltem Datum
+function getNextDays(startDateStr, count = 6) {
+    const startDate = new Date(startDateStr);
+    if (isNaN(startDate.getTime())) return [];
+    const days = [];
+    let current = new Date(startDate);
+    for (let i = 0; i < count; i++) {
+        days.push(new Date(current));
+        current.setDate(current.getDate() + 1);
+    }
+    return days;
+}
+
 export default function DailyMenuPage() {
     const [meals, setMeals] = useState<Meal[]>([]);
     const [selectedMeals, setSelectedMeals] = useState<Meal[]>([]);
     const [searchTerm, setSearchTerm] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [currentView, setCurrentView] = useState<'choose' | 'edit'>('choose');
+    const [activeDayIndex, setActiveDayIndex] = useState(0);
 
     const form = useForm<DailyMenuFormValues>({
         resolver: zodResolver(dailyMenuSchema),
@@ -55,6 +69,10 @@ export default function DailyMenuPage() {
 
         fetchMeals();
     }, []);
+
+    useEffect(() => {
+        setActiveDayIndex(0); // Immer zurücksetzen, wenn das Kalenderdatum geändert wird
+    }, [form.watch('date')]);
 
     const handleMealSelection = (meal: Meal) => {
         const currentMealIds = form.getValues('meal_ids');
@@ -105,6 +123,9 @@ export default function DailyMenuPage() {
         meal.description.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
+    const nextDays = getNextDays(form.watch('date'), 6);
+    const isValidDate = nextDays.length > 0;
+
     const MealCard = ({ meal, isSelected = false, isEditable = false }: { 
         meal: Meal; 
         isSelected?: boolean; 
@@ -113,7 +134,7 @@ export default function DailyMenuPage() {
         <div 
             className={`relative bg-white rounded-2xl overflow-hidden border-2 transition-all duration-300 cursor-pointer ${
                 isSelected 
-                    ? 'border-green-500 bg-green-50' 
+                    ? 'border-primary bg-primary/10' 
                     : 'border-gray-200 hover:border-gray-300'
             }`}
             onClick={() => !isEditable && handleMealSelection(meal)}
@@ -134,7 +155,7 @@ export default function DailyMenuPage() {
                 
                 {/* Selection indicator */}
                 {isSelected && (
-                    <div className="absolute top-3 right-3 w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
+                    <div className="absolute top-3 right-3 w-8 h-8 bg-primary rounded-full flex items-center justify-center">
                         <Check className="w-5 h-5 text-white" />
                     </div>
                 )}
@@ -156,7 +177,7 @@ export default function DailyMenuPage() {
                     <span className="text-sm text-gray-500 line-through">
                         €{(meal.portion_sizes.medium.price * 1.25).toFixed(0)}
                     </span>
-                    <div className="bg-green-100 text-green-800 px-2 py-1 rounded-md text-xs font-medium">
+                    <div className="bg-primary/10 text-primary px-2 py-1 rounded-md text-xs font-medium">
                         DISCOUNT
                     </div>
                 </div>
@@ -224,39 +245,49 @@ export default function DailyMenuPage() {
                                         <span className="text-sm font-medium text-gray-700">Date</span>
                                         <input
                                             type="date"
-                                            value={form.watch('date')}
+                                            value={nextDays[activeDayIndex] ? nextDays[activeDayIndex].toISOString().split('T')[0] : form.watch('date')}
                                             onChange={(e) => form.setValue('date', e.target.value)}
                                             className="text-sm border border-gray-300 rounded-lg px-3 py-1"
                                         />
                                     </div>
-                                    
-                                    <div className="grid grid-cols-6 gap-2">
-                                        {['Fri', 'Sat', 'Sun', 'Mon', 'Tue', 'Wed'].map((day, index) => (
-                                            <div key={day} className={`text-center p-2 rounded-lg ${index === 0 ? 'bg-green-500 text-white' : 'text-gray-600'}`}>
-                                                <div className="text-xs">{day}</div>
-                                                <div className="text-sm font-medium">03</div>
-                                            </div>
-                                        ))}
-                                    </div>
+                                    {isValidDate && (
+                                        <div className="grid grid-cols-6 gap-2">
+                                            {nextDays.map((date, index) => (
+                                                <button
+                                                    type="button"
+                                                    key={date.toISOString()}
+                                                    onClick={() => {
+                                                        setActiveDayIndex(index);
+                                                        form.setValue('date', date.toISOString().split('T')[0]);
+                                                    }}
+                                                    className={`w-full text-center p-2 rounded-lg transition-colors font-medium
+                                                        ${activeDayIndex === index ? 'bg-primary text-white' : 'text-gray-600 bg-transparent hover:bg-primary/10'}`}
+                                                >
+                                                    <div className="text-xs">{date.toLocaleDateString('en-US', { weekday: 'short' })}</div>
+                                                    <div className="text-sm font-bold">{date.getDate().toString().padStart(2, '0')}</div>
+                                                </button>
+                                            ))}
+                                        </div>
+                                    )}
                                 </div>
 
                                 {/* Search */}
                                 <div className="relative mb-6">
                                     <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-                        <Input
-                            type="text"
+                                    <Input
+                                        type="text"
                                         placeholder="Search meals..."
-                            value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
+                                        value={searchTerm}
+                                        onChange={(e) => setSearchTerm(e.target.value)}
                                         className="pl-10 h-12 bg-gray-50 border-0 rounded-xl"
-                        />
-                    </div>
+                                    />
+                                </div>
 
                                 {/* Meals Grid */}
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     {filteredMeals.map((meal) => (
                                         <MealCard 
-                                        key={meal.id}
+                                            key={meal.id}
                                             meal={meal} 
                                             isSelected={form.getValues('meal_ids').includes(meal.id)}
                                         />
@@ -300,7 +331,7 @@ export default function DailyMenuPage() {
                                 <Button
                                     onClick={form.handleSubmit(handleSubmit)}
                                     disabled={isLoading || selectedMeals.length === 0}
-                                    className="w-full h-12 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-xl"
+                                    className="w-full h-12 bg-primary text-white hover:bg-[#5a8e22] font-semibold rounded-xl"
                                 >
                                     {isLoading ? 'Saving...' : 'Save Daily Menu'}
                                 </Button>
@@ -331,7 +362,7 @@ export default function DailyMenuPage() {
                                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                                         {selectedMeals.map((meal, index) => (
                                             <MealCard 
-                                        key={meal.id}
+                                                key={meal.id}
                                                 meal={meal} 
                                                 isEditable={true}
                                             />
@@ -346,16 +377,16 @@ export default function DailyMenuPage() {
                                         <p className="text-gray-500 mb-4">Start by choosing meals for today's menu</p>
                                         <Button
                                             onClick={() => setCurrentView('choose')}
-                                            className="bg-green-600 hover:bg-green-700 text-white font-semibold rounded-xl px-6"
+                                            className="bg-primary text-white hover:bg-[#5a8e22] font-semibold rounded-xl px-6"
                                         >
                                             Choose Meals
                                         </Button>
                                     </div>
                                 )}
                             </div>
-                            </div>
                         </div>
-                    )}
+                    </div>
+                )}
             </div>
         </div>
     );

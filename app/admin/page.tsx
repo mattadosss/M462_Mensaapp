@@ -11,9 +11,9 @@ export default function AdminDashboard() {
                         Erstellen und bearbeiten Sie die täglichen Menüs
                     </p>
                     <Link href="/admin/daily-menu">
-                        <span className="inline-block px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition">
+                        <button className="mt-4 py-2 px-6 rounded-xl bg-primary text-white font-semibold text-base hover:bg-[#5a8e22] transition block mx-auto min-w-[180px] max-w-full">
                             Zu den Tagesmenüs
-                        </span>
+                        </button>
                     </Link>
                 </div>
                 
@@ -23,9 +23,9 @@ export default function AdminDashboard() {
                         Hinzufügen, bearbeiten und löschen Sie Gerichte
                     </p>
                     <Link href="/admin/meals">
-                        <span className="inline-block px-6 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition">
+                        <button className="mt-4 py-2 px-6 rounded-xl bg-primary text-white font-semibold text-base hover:bg-[#5a8e22] transition block mx-auto min-w-[180px] max-w-full">
                             Zu den Gerichten
-                        </span>
+                        </button>
                     </Link>
                 </div>
 
@@ -35,15 +35,17 @@ export default function AdminDashboard() {
                         Definieren Sie Rabattgruppen und deren Konditionen
                     </p>
                     <Link href="/admin/discount-groups">
-                        <span className="inline-block px-6 py-2 bg-purple-600 text-white rounded hover:bg-purple-700 transition">
+                        <button className="mt-4 py-2 px-6 rounded-xl bg-primary text-white font-semibold text-base hover:bg-[#5a8e22] transition block mx-auto min-w-[180px] max-w-full">
                             Zu den Rabattgruppen
-                        </span>
+                        </button>
                     </Link>
                 </div>
                 <div className="bg-white rounded-lg shadow-md p-6 flex flex-col items-center">
                     <h2 className="text-xl font-semibold mb-4">Live Orders Overview</h2>
-                    <Link href="/admin/orders">
-                        <span className="inline-block px-6 py-2 bg-purple-600 text-white rounded hover:bg-purple-700 transition">View Live Orders</span>
+                    <Link href="/admin/orders-overview">
+                        <button className="mt-4 py-2 px-6 rounded-xl bg-primary text-white font-semibold text-base hover:bg-[#5a8e22] transition block mx-auto min-w-[180px] max-w-full">
+                            View Live Orders
+                        </button>
                     </Link>
                 </div>
             </div>
