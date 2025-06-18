@@ -22,10 +22,10 @@ const dailyMenuSchema = z.object({
 type DailyMenuFormValues = z.infer<typeof dailyMenuSchema>;
 
 // Hilfsfunktion für die nächsten 6 Tage ab gewähltem Datum
-function getNextDays(startDateStr, count = 6) {
+function getNextDays(startDateStr: string, count: number = 6): Date[] {
     const startDate = new Date(startDateStr);
     if (isNaN(startDate.getTime())) return [];
-    const days = [];
+    const days: Date[] = [];
     let current = new Date(startDate);
     for (let i = 0; i < count; i++) {
         days.push(new Date(current));
