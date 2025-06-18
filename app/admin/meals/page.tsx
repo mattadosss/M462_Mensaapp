@@ -43,6 +43,8 @@ export default function AdminMealsPage() {
     const handleUpdateMeal = async (data: CreateMealInput) => {
         setIsLoading(true);
         const supabase = createClient();
+        
+        // Create portion sizes with the same price for all sizes
         const mealData = {
             name: data.name,
             description: data.description,
@@ -52,16 +54,16 @@ export default function AdminMealsPage() {
             image_url: data.image_url,
             portion_sizes: {
                 small: {
-                    price: data.portion_sizes.small.price,
-                    description: data.portion_sizes.small.description
+                    price: data.portion_sizes.medium.price,
+                    description: 'Small portion'
                 },
                 medium: {
                     price: data.portion_sizes.medium.price,
-                    description: data.portion_sizes.medium.description
+                    description: 'Medium portion'
                 },
                 large: {
-                    price: data.portion_sizes.large.price,
-                    description: data.portion_sizes.large.description
+                    price: data.portion_sizes.medium.price,
+                    description: 'Large portion'
                 }
             }
         };
@@ -122,13 +124,11 @@ export default function AdminMealsPage() {
                         <h2 className="text-xl font-semibold mb-2">{meal.name}</h2>
                         <p className="text-gray-600 mb-4">{meal.description}</p>
                         <div className="space-y-2 mb-4">
-                            <h3 className="font-medium">Portion Sizes:</h3>
-                            {Object.entries(meal.portion_sizes).map(([size, { price, description }]) => (
-                                <div key={size} className="flex justify-between items-center">
-                                    <span className="capitalize">{size}:</span>
-                                    <span className="font-medium">{price.toFixed(2)} €</span>
-                                </div>
-                            ))}
+                            <h3 className="font-medium">Price:</h3>
+                            <div className="flex justify-between items-center">
+                                <span>Standard Price:</span>
+                                <span className="font-medium">{meal.portion_sizes.medium.price.toFixed(2)} €</span>
+                            </div>
                         </div>
                         <div className="flex justify-end space-x-2">
                             <Button onClick={() => handleEdit(meal)}>Edit</Button>
