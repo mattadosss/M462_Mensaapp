@@ -62,7 +62,7 @@ export default function HeaderAuth() {
           )}
           <Link href="/orders">
             <Button variant="ghost" size="sm" className="hidden sm:inline-flex h-8 px-3 text-sm font-medium">
-              Vermerkt
+              Your Order
             </Button>
           </Link>
           <Button variant="outline" size="sm" onClick={handleSignOut} className="h-8 px-3 text-sm font-medium">
