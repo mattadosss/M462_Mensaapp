@@ -49,9 +49,7 @@ export default function CartPage() {
             }
         };
 
-        if (totalPrice > 0) {
-            calculateDiscount();
-        }
+        calculateDiscount();
     }, [totalPrice, accountType]);
 
     const handleCheckout = () => {
