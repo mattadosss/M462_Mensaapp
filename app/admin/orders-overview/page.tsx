@@ -201,7 +201,7 @@ export default function OrdersOverviewPage() {
                                 </div>
                                 <p className="text-gray-600">
                                     Price: <span className="font-medium">
-                                        {(order.meal.portion_sizes.medium.price * order.quantity).toFixed(2)} €
+                                        CHF {(order.meal.portion_sizes.medium.price * order.quantity).toFixed(2)}
                                     </span>
                                 </p>
                             </div>

@@ -52,17 +52,22 @@ export function MealCard({ meal, className = '' }: MealCardProps) {
                 <div>
                     <div className="flex items-center justify-between mb-2">
                         <span className="font-medium">Price</span>
-                        <span className="font-semibold">{meal.portion_sizes.medium.price.toFixed(2)} €</span>
+                        <span className="font-semibold">{meal.portion_sizes.medium.price.toFixed(2)} CHF</span>
                     </div>
-                    <input
-                        type="time"
-                        className="border rounded w-full px-2 py-1 mb-2"
-                        value={orderTime.split('T')[1] || ''}
-                        onChange={(e) => {
-                            const today = new Date().toISOString().split('T')[0];
-                            setOrderTime(`${today}T${e.target.value}`);
-                        }}
-                    />
+                    <div className="mb-2 flex items-center gap-2">
+                        <label className="text-sm font-medium text-gray-700 whitespace-nowrap">
+                            Pickup Time:
+                        </label>
+                        <input
+                            type="time"
+                            className="border rounded flex-1 px-2 py-1"
+                            value={orderTime.split('T')[1] || ''}
+                            onChange={(e) => {
+                                const today = new Date().toISOString().split('T')[0];
+                                setOrderTime(`${today}T${e.target.value}`);
+                            }}
+                        />
+                    </div>
                     <Button
                         className="w-full"
                         onClick={handleAddToCart}

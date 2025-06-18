@@ -113,33 +113,51 @@ export default function AdminMealsPage() {
     };
 
     return (
-        <div className="container mx-auto py-10">
-            <div className="flex justify-between items-center mb-8">
-                <h1 className="text-3xl font-bold">Manage Meals</h1>
-                <Button onClick={() => setIsAddModalOpen(true)}>Add Meal</Button>
+        <div className="container mx-auto px-4 py-6 sm:py-10">
+            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6 sm:mb-8">
+                <h1 className="text-2xl sm:text-3xl font-bold">Manage Meals</h1>
+                <Button 
+                    onClick={() => setIsAddModalOpen(true)}
+                    className="w-full sm:w-auto"
+                >
+                    Add Meal
+                </Button>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                 {meals.map((meal) => (
-                    <div key={meal.id} className="bg-white rounded-lg shadow-md p-6">
-                        <h2 className="text-xl font-semibold mb-2">{meal.name}</h2>
-                        <p className="text-gray-600 mb-4">{meal.description}</p>
+                    <div key={meal.id} className="bg-white rounded-lg shadow-md p-4 sm:p-6">
+                        <h2 className="text-lg sm:text-xl font-semibold mb-2">{meal.name}</h2>
+                        <p className="text-gray-600 mb-4 text-sm sm:text-base line-clamp-3">{meal.description}</p>
                         <div className="space-y-2 mb-4">
-                            <h3 className="font-medium">Price:</h3>
+                            <h3 className="font-medium text-sm sm:text-base">Price:</h3>
                             <div className="flex justify-between items-center">
-                                <span>Standard Price:</span>
-                                <span className="font-medium">{meal.portion_sizes.medium.price.toFixed(2)} €</span>
+                                <span className="text-sm sm:text-base">Standard Price:</span>
+                                <span className="font-medium text-sm sm:text-base">{meal.portion_sizes.medium.price.toFixed(2)} CHF</span>
                             </div>
                         </div>
-                        <div className="flex justify-end space-x-2">
-                            <Button onClick={() => handleEdit(meal)}>Edit</Button>
-                            <Button variant="destructive" onClick={() => handleDelete(meal)}>Delete</Button>
+                        <div className="flex flex-col sm:flex-row gap-2 sm:justify-end sm:space-x-2">
+                            <Button 
+                                onClick={() => handleEdit(meal)}
+                                size="sm"
+                                className="w-full sm:w-auto"
+                            >
+                                Edit
+                            </Button>
+                            <Button 
+                                variant="destructive" 
+                                onClick={() => handleDelete(meal)}
+                                size="sm"
+                                className="w-full sm:w-auto"
+                            >
+                                Delete
+                            </Button>
                         </div>
                     </div>
                 ))}
             </div>
 
             <Dialog open={isEditModalOpen} onOpenChange={setIsEditModalOpen}>
-                <DialogContent>
+                <DialogContent className="w-[95vw] max-w-md sm:max-w-lg">
                     <DialogHeader>
                         <DialogTitle>Edit Meal</DialogTitle>
                     </DialogHeader>
@@ -150,7 +168,7 @@ export default function AdminMealsPage() {
             </Dialog>
 
             <Dialog open={isAddModalOpen} onOpenChange={setIsAddModalOpen}>
-                <DialogContent>
+                <DialogContent className="w-[95vw] max-w-md sm:max-w-lg">
                     <DialogHeader>
                         <DialogTitle>Add New Meal</DialogTitle>
                     </DialogHeader>
@@ -159,7 +177,7 @@ export default function AdminMealsPage() {
             </Dialog>
 
             <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
-                <AlertDialogContent>
+                <AlertDialogContent className="w-[95vw] max-w-md">
                     <AlertDialogHeader>
                         <AlertDialogTitle>Are you sure?</AlertDialogTitle>
                         <AlertDialogDescription>

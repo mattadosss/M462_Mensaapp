@@ -172,14 +172,8 @@ export default function DailyMenuPage() {
                 <h3 className="font-semibold text-gray-900 mb-1 text-sm sm:text-base">{meal.name}</h3>
                 <div className="flex items-center justify-between mb-2">
                     <span className="text-base sm:text-lg font-bold text-gray-900">
-                        {meal.portion_sizes.medium.price.toFixed(0)}
+                        CHF {meal.portion_sizes.medium.price.toFixed(2)}
                     </span>
-                    <span className="text-xs sm:text-sm text-gray-500 line-through">
-                        €{(meal.portion_sizes.medium.price * 1.25).toFixed(0)}
-                    </span>
-                    <div className="bg-primary/10 text-primary px-2 py-1 rounded-md text-xs font-medium">
-                        DISCOUNT
-                    </div>
                 </div>
                 <p className="text-gray-600 text-xs sm:text-sm mb-3 line-clamp-2">{meal.description}</p>
                 
@@ -310,7 +304,7 @@ export default function DailyMenuPage() {
                                                 <div className="w-8 h-8 sm:w-12 sm:h-12 bg-gradient-to-br from-purple-300 to-purple-500 rounded-lg flex-shrink-0"></div>
                                                 <div className="flex-1 min-w-0">
                                                     <h4 className="font-medium text-gray-900 text-xs sm:text-sm truncate">{meal.name}</h4>
-                                                    <p className="text-xs text-gray-500">{meal.portion_sizes.medium.price.toFixed(0)} €</p>
+                                                    <p className="text-xs text-gray-500">CHF {meal.portion_sizes.medium.price.toFixed(2)}</p>
                                                 </div>
                                                 <button
                                                     onClick={() => handleMealSelection(meal)}

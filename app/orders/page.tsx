@@ -136,7 +136,7 @@ export default function OrdersPage() {
                                     </p>
                                     <p className="text-sm">Quantity: {order.quantity}</p>
                                     <p className="font-semibold">
-                                        Total: €{(order.meal.price * order.quantity).toFixed(2)}
+                                        Total: CHF {(order.meal.price * order.quantity).toFixed(2)}
                                     </p>
                                 </div>
                                 {order.meal.image_url && (

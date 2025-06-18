@@ -36,11 +36,13 @@ export function DiscountDisplay({ calculation, className = "" }: DiscountDisplay
                 <div className="text-sm text-gray-600">
                     <div className="flex justify-between items-center">
                         <span>Originalpreis:</span>
-                        <span className="line-through">{originalPrice.toFixed(2)} €</span>
+                        <span className="line-through">{originalPrice.toFixed(2)} CHF</span>
                     </div>
                     <div className="flex justify-between items-center text-green-600">
                         <span>{discountPercentage}% Rabatt:</span>
-                        <span>-{discountAmount.toFixed(2)} €</span>
+                        <span className="text-green-600 font-medium">
+                            -{discountAmount.toFixed(2)} CHF
+                        </span>
                     </div>
                 </div>
             )}
@@ -51,7 +53,7 @@ export function DiscountDisplay({ calculation, className = "" }: DiscountDisplay
                     "text-xl font-bold",
                     hasDiscount ? "text-green-600" : "text-gray-900"
                 )}>
-                    {finalPrice.toFixed(2)} €
+                    {finalPrice.toFixed(2)} CHF
                 </span>
             </div>
         </div>

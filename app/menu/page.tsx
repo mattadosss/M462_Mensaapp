@@ -62,51 +62,51 @@ export default function MenuPage() {
 
   if (loading) {
     return (
-      <div className="container mx-auto py-10">
-        <h1 className="text-3xl font-bold mb-8">Choose Menu's</h1>
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-8 gap-4">
+      <div className="container mx-auto px-4 py-6 sm:py-10">
+        <h1 className="text-2xl sm:text-3xl font-bold mb-6 sm:mb-8">Choose Menu's</h1>
+        <div className="flex flex-col gap-6 sm:gap-4 mb-6 sm:mb-8">
           <div>
-            <span className="block text-xl font-medium mb-2">Date</span>
-            <div className="flex gap-4">
+            <span className="block text-lg sm:text-xl font-medium mb-3 sm:mb-2">Date</span>
+            <div className="grid grid-cols-5 gap-2 sm:gap-4">
               {weekdays.map((date) => (
                 <button
                   key={date.toISOString()}
                   onClick={() => setSelectedDate(date)}
-                  className={`flex flex-col items-center px-8 py-4 rounded-xl font-medium text-lg
+                  className={`flex flex-col items-center px-3 sm:px-8 py-3 sm:py-4 rounded-xl font-medium text-sm sm:text-lg
                     ${selectedDate.toDateString() === date.toDateString() ? 'bg-primary text-white' : 'bg-gray-100 text-gray-700'}`}
                 >
-                  <span>{date.toLocaleDateString('en-US', { weekday: 'short' })}</span>
-                  <span className="text-2xl font-bold">{date.getDate().toString().padStart(2, '0')}</span>
+                  <span className="text-xs sm:text-base">{date.toLocaleDateString('en-US', { weekday: 'short' })}</span>
+                  <span className="text-lg sm:text-2xl font-bold">{date.getDate().toString().padStart(2, '0')}</span>
                 </button>
               ))}
             </div>
           </div>
-          {/* Datepicker rechts */}
-          <div className="flex items-center gap-2">
+          {/* Datepicker */}
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2">
+            <label className="text-sm sm:text-base font-medium text-gray-700">Select Week:</label>
             <input
               type="date"
-              className="bg-black text-white rounded-full px-8 py-3 text-2xl font-light focus:outline-none"
+              className="bg-black text-white rounded-full px-4 sm:px-8 py-2 sm:py-3 text-base sm:text-2xl font-light focus:outline-none w-full sm:w-auto"
               value={calendarDate.toISOString().split('T')[0]}
               onChange={e => {
                 const newDate = new Date(e.target.value);
                 if (!isNaN(newDate.getTime())) setCalendarDate(newDate);
               }}
-              style={{ width: '220px' }}
             />
           </div>
         </div>
-        <div className="bg-white rounded-lg shadow-md p-6">
-          <h2 className="text-2xl font-semibold mb-4">
+        <div className="bg-white rounded-lg shadow-md p-4 sm:p-6">
+          <h2 className="text-xl sm:text-2xl font-semibold mb-4">
             {selectedDate.toLocaleDateString('en-US', {
               weekday: 'long',
               month: 'long',
               day: 'numeric'
             })}
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
             {[1, 2, 3].map((_, i) => (
               <div key={i} className="animate-pulse">
-                <div className="h-40 bg-gray-200 rounded-lg"></div>
+                <div className="h-32 sm:h-40 bg-gray-200 rounded-lg"></div>
                 <div className="mt-2 h-4 bg-gray-200 rounded w-3/4"></div>
                 <div className="mt-1 h-4 bg-gray-200 rounded w-1/2"></div>
               </div>
@@ -119,36 +119,36 @@ export default function MenuPage() {
 
   if (error) {
     return (
-      <div className="container mx-auto py-10">
-        <h1 className="text-3xl font-bold mb-8">Choose Menu's</h1>
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-8 gap-4">
+      <div className="container mx-auto px-4 py-6 sm:py-10">
+        <h1 className="text-2xl sm:text-3xl font-bold mb-6 sm:mb-8">Choose Menu's</h1>
+        <div className="flex flex-col gap-6 sm:gap-4 mb-6 sm:mb-8">
           <div>
-            <span className="block text-xl font-medium mb-2">Date</span>
-            <div className="flex gap-4">
+            <span className="block text-lg sm:text-xl font-medium mb-3 sm:mb-2">Date</span>
+            <div className="grid grid-cols-5 gap-2 sm:gap-4">
               {weekdays.map((date) => (
                 <button
                   key={date.toISOString()}
                   onClick={() => setSelectedDate(date)}
-                  className={`flex flex-col items-center px-8 py-4 rounded-xl font-medium text-lg
+                  className={`flex flex-col items-center px-3 sm:px-8 py-3 sm:py-4 rounded-xl font-medium text-sm sm:text-lg
                     ${selectedDate.toDateString() === date.toDateString() ? 'bg-primary text-white' : 'bg-gray-100 text-gray-700'}`}
                 >
-                  <span>{date.toLocaleDateString('en-US', { weekday: 'short' })}</span>
-                  <span className="text-2xl font-bold">{date.getDate().toString().padStart(2, '0')}</span>
+                  <span className="text-xs sm:text-base">{date.toLocaleDateString('en-US', { weekday: 'short' })}</span>
+                  <span className="text-lg sm:text-2xl font-bold">{date.getDate().toString().padStart(2, '0')}</span>
                 </button>
               ))}
             </div>
           </div>
-          {/* Datepicker rechts */}
-          <div className="flex items-center gap-2">
+          {/* Datepicker */}
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2">
+            <label className="text-sm sm:text-base font-medium text-gray-700">Select Week:</label>
             <input
               type="date"
-              className="bg-black text-white rounded-full px-8 py-3 text-2xl font-light focus:outline-none"
+              className="bg-black text-white rounded-full px-4 sm:px-8 py-2 sm:py-3 text-base sm:text-2xl font-light focus:outline-none w-full sm:w-auto"
               value={calendarDate.toISOString().split('T')[0]}
               onChange={e => {
                 const newDate = new Date(e.target.value);
                 if (!isNaN(newDate.getTime())) setCalendarDate(newDate);
               }}
-              style={{ width: '220px' }}
             />
           </div>
         </div>
@@ -160,40 +160,40 @@ export default function MenuPage() {
   }
 
   return (
-    <div className="container mx-auto py-10">
-      <h1 className="text-3xl font-bold mb-8">Choose Menu's</h1>
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-8 gap-4">
+    <div className="container mx-auto px-4 py-6 sm:py-10">
+      <h1 className="text-2xl sm:text-3xl font-bold mb-6 sm:mb-8">Choose Menu's</h1>
+      <div className="flex flex-col gap-6 sm:gap-4 mb-6 sm:mb-8">
         <div>
-          <span className="block text-xl font-medium mb-2">Date</span>
-          <div className="flex gap-4">
+          <span className="block text-lg sm:text-xl font-medium mb-3 sm:mb-2">Date</span>
+          <div className="grid grid-cols-5 gap-2 sm:gap-4">
             {weekdays.map((date) => (
               <button
                 key={date.toISOString()}
                 onClick={() => setSelectedDate(date)}
-                className={`flex flex-col items-center px-8 py-4 rounded-xl font-medium text-lg
+                className={`flex flex-col items-center px-3 sm:px-8 py-3 sm:py-4 rounded-xl font-medium text-sm sm:text-lg
                   ${selectedDate.toDateString() === date.toDateString() ? 'bg-primary text-white' : 'bg-gray-100 text-gray-700'}`}
               >
-                <span>{date.toLocaleDateString('en-US', { weekday: 'short' })}</span>
-                <span className="text-2xl font-bold">{date.getDate().toString().padStart(2, '0')}</span>
+                <span className="text-xs sm:text-base">{date.toLocaleDateString('en-US', { weekday: 'short' })}</span>
+                <span className="text-lg sm:text-2xl font-bold">{date.getDate().toString().padStart(2, '0')}</span>
               </button>
             ))}
           </div>
         </div>
-        {/* Datepicker rechts */}
-        <div className="flex items-center gap-2">
+        {/* Datepicker */}
+        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2">
+          <label className="text-sm sm:text-base font-medium text-gray-700">Select Week:</label>
           <input
             type="date"
-            className="bg-black text-white rounded-full px-8 py-3 text-2xl font-light focus:outline-none"
+            className="bg-black text-white rounded-full px-4 sm:px-8 py-2 sm:py-3 text-base sm:text-2xl font-light focus:outline-none w-full sm:w-auto"
             value={calendarDate.toISOString().split('T')[0]}
             onChange={e => {
               const newDate = new Date(e.target.value);
               if (!isNaN(newDate.getTime())) setCalendarDate(newDate);
             }}
-            style={{ width: '220px' }}
           />
         </div>
       </div>
-      <div className="space-y-8">
+      <div className="space-y-6 sm:space-y-8">
         {(() => {
           const date = selectedDate;
           const dailyMenu = weeklyMenu.find(menu => menu.date === formatDate(date));
@@ -204,10 +204,10 @@ export default function MenuPage() {
           });
 
           return (
-            <div key={date.toISOString()} className="bg-white rounded-lg shadow-md p-6">
-              <h2 className="text-2xl font-semibold mb-4">{formattedDate}</h2>
+            <div key={date.toISOString()} className="bg-white rounded-lg shadow-md p-4 sm:p-6">
+              <h2 className="text-xl sm:text-2xl font-semibold mb-4">{formattedDate}</h2>
               {dailyMenu?.meals && dailyMenu.meals.length > 0 ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                   {dailyMenu.meals.map((meal) => (
                     <MealCard key={meal.id} meal={meal} />
                   ))}

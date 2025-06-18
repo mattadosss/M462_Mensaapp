@@ -125,7 +125,7 @@ export default function CartPage() {
                                         <h3 className="text-lg font-semibold">{item.meal.name}</h3>
                                         <p className="text-gray-600">{new Date(item.orderTime).toLocaleString()}</p>
                                         <p className="text-gray-600">
-                                            {item.meal.portion_sizes.medium.price.toFixed(2)} € each
+                                            {item.meal.portion_sizes.medium.price.toFixed(2)} CHF each
                                         </p>
                                     </div>
                                     <div className="flex items-center gap-4">
