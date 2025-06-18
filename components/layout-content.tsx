@@ -6,7 +6,6 @@ import { Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { AdminLink } from "@/components/admin-link";
-import { ThemeSwitcher } from "@/components/theme-switcher";
 import { EnvVarWarning } from "@/components/env-var-warning";
 import HeaderAuth from "@/components/header-auth";
 import { hasEnvVars } from "@/utils/supabase/check-env-vars";
@@ -24,39 +23,41 @@ export function LayoutContent({ children }: LayoutContentProps) {
     <CartProvider>
       <main className="min-h-screen flex flex-col">
         {/* Mobile Header */}
-        <header className="fixed top-0 left-0 right-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-          <div className="flex items-center justify-between px-4 h-16 border-b">
-            <div className="flex items-center gap-2">
+        <header className="fixed top-0 left-0 right-0 z-50 bg-white border-b border-gray-200 shadow-sm">
+          <div className="flex items-center justify-between px-4 h-16">
+            {/* Left side - Logo and navigation */}
+            <div className="flex items-center gap-4">
               <Sheet>
                 <SheetTrigger asChild>
-                  <Button variant="ghost" size="icon" className="md:hidden">
+                  <Button variant="ghost" size="icon" className="md:hidden -ml-2">
                     <Menu className="h-5 w-5" />
                   </Button>
                 </SheetTrigger>
                 <SheetContent side="left" className="w-[300px] sm:w-[400px]">
                   <nav className="flex flex-col gap-4 mt-8">
-                    <Link href="/" className="text-lg font-semibold hover:text-primary">
+                    <Link href="/" className="text-lg font-semibold hover:text-primary transition-colors">
                       Home
                     </Link>
-                    <Link href="/menu" className="text-lg font-semibold hover:text-primary">
+                    <Link href="/menu" className="text-lg font-semibold hover:text-primary transition-colors">
                       Menu
                     </Link>
-                    <Link href="/cart" className="text-lg font-semibold hover:text-primary">
+                    <Link href="/cart" className="text-lg font-semibold hover:text-primary transition-colors">
                       Cart
                     </Link>
-                    <Link href="/orders" className="text-lg font-semibold hover:text-primary">
+                    <Link href="/orders" className="text-lg font-semibold hover:text-primary transition-colors">
                       Orders
                     </Link>
                     {!hasEnvVars ? <EnvVarWarning /> : <HeaderAuth />}
                   </nav>
                 </SheetContent>
               </Sheet>
-              <Link href="/" className="text-xl font-bold">
+              <Link href="/" className="text-xl font-bold text-gray-900 hover:text-gray-700 transition-colors">
                 Mensa
               </Link>
             </div>
-            <div className="flex items-center gap-2">
-              <ThemeSwitcher />
+
+            {/* Right side - Auth and user actions */}
+            <div className="flex items-center gap-3">
               {!hasEnvVars ? <EnvVarWarning /> : <HeaderAuth />}
             </div>
           </div>
@@ -106,7 +107,6 @@ export function LayoutContent({ children }: LayoutContentProps) {
                 Supabase
               </a>
             </p>
-            <ThemeSwitcher />
           </footer>
         )}
       </main>

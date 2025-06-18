@@ -1,10 +1,8 @@
 import DeployButton from "@/components/deploy-button";
 import { EnvVarWarning } from "@/components/env-var-warning";
 import HeaderAuth from "@/components/header-auth";
-import { ThemeSwitcher } from "@/components/theme-switcher";
 import { hasEnvVars } from "@/utils/supabase/check-env-vars";
 import { Geist } from "next/font/google";
-import { ThemeProvider } from "next-themes";
 import Link from "next/link";
 import "./globals.css";
 import { Suspense } from "react";
@@ -30,23 +28,6 @@ export const metadata = {
   description: "Your digital canteen companion",
 };
 
-function ThemeProviderWrapper({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
-  return (
-    <ThemeProvider
-      attribute="class"
-      defaultTheme="system"
-      enableSystem
-      disableTransitionOnChange
-    >
-      {children}
-    </ThemeProvider>
-  );
-}
-
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -56,9 +37,7 @@ export default function RootLayout({
     <html lang="en" className={geistSans.className} suppressHydrationWarning>
       <body className="bg-background text-foreground">
         <Suspense fallback={<div>Loading...</div>}>
-          <ThemeProviderWrapper>
-            <LayoutContent>{children}</LayoutContent>
-          </ThemeProviderWrapper>
+          <LayoutContent>{children}</LayoutContent>
         </Suspense>
       </body>
     </html>
