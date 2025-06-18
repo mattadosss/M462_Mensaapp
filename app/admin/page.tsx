@@ -1,6 +1,20 @@
+"use client";
+
 import Link from 'next/link';
+import { Button } from '@/components/ui/button';
+import { useState } from 'react';
 
 export default function AdminDashboard() {
+    const [isLoading, setIsLoading] = useState<string | null>(null);
+
+    const handleNavigation = (path: string) => {
+        setIsLoading(path);
+        // Simuliere eine kurze Verzögerung für bessere UX
+        setTimeout(() => {
+            window.location.href = path;
+        }, 100);
+    };
+
     return (
         <div className="container mx-auto py-10">
             <h1 className="text-3xl font-bold mb-8">Admin Dashboard</h1>
@@ -10,11 +24,14 @@ export default function AdminDashboard() {
                     <p className="text-gray-600 text-center mb-4">
                         Erstellen und bearbeiten Sie die täglichen Menüs
                     </p>
-                    <Link href="/admin/daily-menu">
-                        <span className="inline-block px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition">
-                            Zu den Tagesmenüs
-                        </span>
-                    </Link>
+                    <Button 
+                        onClick={() => handleNavigation('/admin/daily-menu')}
+                        isLoading={isLoading === '/admin/daily-menu'}
+                        loadingText="Lade..."
+                        className="mt-4 min-w-[180px] max-w-full"
+                    >
+                        Zu den Tagesmenüs
+                    </Button>
                 </div>
                 
                 <div className="bg-white rounded-lg shadow-md p-6 flex flex-col items-center">
@@ -22,11 +39,14 @@ export default function AdminDashboard() {
                     <p className="text-gray-600 text-center mb-4">
                         Hinzufügen, bearbeiten und löschen Sie Gerichte
                     </p>
-                    <Link href="/admin/meals">
-                        <span className="inline-block px-6 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition">
-                            Zu den Gerichten
-                        </span>
-                    </Link>
+                    <Button 
+                        onClick={() => handleNavigation('/admin/meals')}
+                        isLoading={isLoading === '/admin/meals'}
+                        loadingText="Lade..."
+                        className="mt-4 min-w-[180px] max-w-full"
+                    >
+                        Zu den Gerichten
+                    </Button>
                 </div>
 
                 <div className="bg-white rounded-lg shadow-md p-6 flex flex-col items-center">
@@ -34,17 +54,26 @@ export default function AdminDashboard() {
                     <p className="text-gray-600 text-center mb-4">
                         Definieren Sie Rabattgruppen und deren Konditionen
                     </p>
-                    <Link href="/admin/discount-groups">
-                        <span className="inline-block px-6 py-2 bg-purple-600 text-white rounded hover:bg-purple-700 transition">
-                            Zu den Rabattgruppen
-                        </span>
-                    </Link>
+                    <Button 
+                        onClick={() => handleNavigation('/admin/discount-groups')}
+                        isLoading={isLoading === '/admin/discount-groups'}
+                        loadingText="Lade..."
+                        className="mt-4 min-w-[180px] max-w-full"
+                    >
+                        Zu den Rabattgruppen
+                    </Button>
                 </div>
+
                 <div className="bg-white rounded-lg shadow-md p-6 flex flex-col items-center">
                     <h2 className="text-xl font-semibold mb-4">Live Orders Overview</h2>
-                    <Link href="/admin/orders">
-                        <span className="inline-block px-6 py-2 bg-purple-600 text-white rounded hover:bg-purple-700 transition">View Live Orders</span>
-                    </Link>
+                    <Button 
+                        onClick={() => handleNavigation('/admin/orders-overview')}
+                        isLoading={isLoading === '/admin/orders-overview'}
+                        loadingText="Lade..."
+                        className="mt-4 min-w-[180px] max-w-full"
+                    >
+                        View Live Orders
+                    </Button>
                 </div>
             </div>
         </div>

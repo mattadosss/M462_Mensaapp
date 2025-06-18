@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import { createClient } from '@/utils/supabase/client';
 import { useRouter } from 'next/navigation';
@@ -15,6 +15,7 @@ export default function HeaderAuth() {
   const { totalItems } = useCart();
   const [user, setUser] = useState<any>(null);
   const accountType = useAccountType();
+  const [isLoading, setIsLoading] = useState<string | null>(null);
 
   useEffect(() => {
     const getUser = async () => {
@@ -33,19 +34,34 @@ export default function HeaderAuth() {
     };
   }, [supabase.auth]);
 
+  const handleNavigation = (path: string) => {
+    setIsLoading(path);
+    // Simuliere eine kurze Verzögerung für bessere UX
+    setTimeout(() => {
+      window.location.href = path;
+    }, 100);
+  };
+
   const handleSignOut = async () => {
-    await supabase.auth.signOut();
-    router.refresh();
+    setIsLoading('signout');
+    try {
+      await supabase.auth.signOut();
+      window.location.href = '/';
+    } catch (error) {
+      console.error('Error signing out:', error);
+    } finally {
+      setIsLoading(null);
+    }
   };
 
   return (
-    <div className="flex items-center gap-4">
+    <div className="flex items-center gap-2">
       {user ? (
         <>
-          <span className="text-sm text-muted-foreground">{accountType}</span>
-          <Link href="/cart">
-            <Button variant="ghost" size="icon" className="relative">
-              <ShoppingCart className="h-5 w-5" />
+          <span className="text-sm text-gray-600 font-medium">{accountType}</span>
+          <Link href="/cart" className="hidden md:block">
+            <Button variant="ghost" size="icon" className="relative h-9 w-9">
+              <span className="text-lg">🛒</span>
               {totalItems > 0 && (
                 <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
                   {totalItems}
@@ -54,21 +70,49 @@ export default function HeaderAuth() {
             </Button>
           </Link>
           {user.user_metadata?.role === 'admin' && (
-            <Link href="/admin">
-              <Button variant="ghost">Admin</Button>
-            </Link>
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              className="hidden sm:inline-flex h-8 px-3 text-sm font-medium"
+              onClick={() => handleNavigation('/admin')}
+              isLoading={isLoading === '/admin'}
+              loadingText="Lade..."
+            >
+              Admin
+            </Button>
           )}
-          <Link href="/orders">
-            <Button variant="ghost">Vermerkt</Button>
-          </Link>
-          <Button variant="ghost" onClick={handleSignOut}>
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            className="hidden sm:inline-flex h-8 px-3 text-sm font-medium"
+            onClick={() => handleNavigation('/orders')}
+            isLoading={isLoading === '/orders'}
+            loadingText="Lade..."
+          >
+            Your Order
+          </Button>
+          <Button 
+            variant="outline" 
+            size="sm" 
+            onClick={handleSignOut} 
+            className="h-8 px-3 text-sm font-medium"
+            isLoading={isLoading === 'signout'}
+            loadingText="Abmelde..."
+          >
             Sign Out
           </Button>
         </>
       ) : (
-        <Link href="/auth">
-          <Button variant="ghost">Sign In</Button>
-        </Link>
+        <Button 
+          variant="default" 
+          size="sm" 
+          className="h-8 px-4 text-sm font-medium"
+          onClick={() => handleNavigation('/auth')}
+          isLoading={isLoading === '/auth'}
+          loadingText="Lade..."
+        >
+          Sign In
+        </Button>
       )}
     </div>
   );

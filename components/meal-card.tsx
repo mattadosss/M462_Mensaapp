@@ -11,6 +11,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { useCart } from '@/lib/cart-context';
 import { useState } from 'react';
+import { toast } from 'sonner'; // ✅ Import toast
 
 interface MealCardProps {
     meal: Meal;
@@ -22,15 +23,13 @@ export function MealCard({ meal, className = '' }: MealCardProps) {
     const [orderTime, setOrderTime] = useState<string>('');
 
     const handleAddToCart = () => {
-        if (!orderTime) {
-            // If no time is selected, use current time
-            const now = new Date();
-            now.setMinutes(now.getMinutes() - now.getTimezoneOffset()); // Adjust for timezone
-            addToCart(meal, now.toISOString().slice(0, 16));
-        } else {
-            addToCart(meal, orderTime);
-            setOrderTime('');
-        }
+        const now = new Date();
+        now.setMinutes(now.getMinutes() - now.getTimezoneOffset()); // timezone correction
+
+        const timeToUse = orderTime || now.toISOString().slice(0, 16);
+        addToCart(meal, timeToUse);
+        toast.success('Added to cart!'); // ✅ Show toast notification
+        setOrderTime('');
     };
 
     return (
@@ -44,22 +43,30 @@ export function MealCard({ meal, className = '' }: MealCardProps) {
                     />
                 </div>
             )}
-            
+
             <h3 className="text-xl font-semibold mb-2">{meal.name}</h3>
             <p className="text-gray-600 mb-3">{meal.description}</p>
-            
+
             <div className="space-y-4">
                 <div>
                     <div className="flex items-center justify-between mb-2">
                         <span className="font-medium">Price</span>
-                        <span className="font-semibold">{meal.portion_sizes.medium.price.toFixed(2)} €</span>
+                        <span className="font-semibold">{meal.portion_sizes.medium.price.toFixed(2)} CHF</span>
                     </div>
-                    <input
-                        type="datetime-local"
-                        className="border rounded w-full px-2 py-1 mb-2"
-                        value={orderTime}
-                        onChange={(e) => setOrderTime(e.target.value)}
-                    />
+                    <div className="mb-2 flex items-center gap-2">
+                        <label className="text-sm font-medium text-gray-700 whitespace-nowrap">
+                            Pickup Time:
+                        </label>
+                        <input
+                            type="time"
+                            className="border rounded flex-1 px-2 py-1"
+                            value={orderTime.split('T')[1] || ''}
+                            onChange={(e) => {
+                                const today = new Date().toISOString().split('T')[0];
+                                setOrderTime(`${today}T${e.target.value}`);
+                            }}
+                        />
+                    </div>
                     <Button
                         className="w-full"
                         onClick={handleAddToCart}
@@ -69,7 +76,6 @@ export function MealCard({ meal, className = '' }: MealCardProps) {
                     </Button>
                 </div>
 
-                {/* Ingredients */}
                 {meal.ingredients.length > 0 && (
                     <div>
                         <h4 className="font-medium mb-2">Ingredients</h4>
@@ -83,7 +89,6 @@ export function MealCard({ meal, className = '' }: MealCardProps) {
                     </div>
                 )}
 
-                {/* Allergens */}
                 {meal.allergens.length > 0 && (
                     <div>
                         <h4 className="font-medium mb-2">Allergens</h4>
@@ -107,7 +112,6 @@ export function MealCard({ meal, className = '' }: MealCardProps) {
                     </div>
                 )}
 
-                {/* Origin */}
                 <div>
                     <h4 className="font-medium mb-1">Origin</h4>
                     <p className="text-gray-600">{meal.country_of_origin}</p>
@@ -115,4 +119,4 @@ export function MealCard({ meal, className = '' }: MealCardProps) {
             </div>
         </div>
     );
-} 
+}

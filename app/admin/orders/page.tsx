@@ -160,9 +160,7 @@ export default function AdminOrdersPage() {
                                 <TableCell>{order.meal?.name}</TableCell>
                                 <TableCell>{order.quantity}</TableCell>
                                 <TableCell>
-                                    {order.meal?.portion_sizes?.medium?.price 
-                                        ? (order.meal.portion_sizes.medium.price * order.quantity).toFixed(2)
-                                        : '0.00'} €
+                                    <span className="font-medium">{order.meal?.portion_sizes?.medium?.price ? (order.meal.portion_sizes.medium.price * order.quantity).toFixed(2) : '0.00'} CHF</span>
                                 </TableCell>
                                 <TableCell>
                                     <Select

@@ -1,14 +1,23 @@
 import DeployButton from "@/components/deploy-button";
 import { EnvVarWarning } from "@/components/env-var-warning";
 import HeaderAuth from "@/components/header-auth";
-import { ThemeSwitcher } from "@/components/theme-switcher";
 import { hasEnvVars } from "@/utils/supabase/check-env-vars";
 import { Geist } from "next/font/google";
-import { ThemeProvider } from "next-themes";
 import Link from "next/link";
 import "./globals.css";
 import { Suspense } from "react";
 import { CartProvider } from "@/lib/cart-context";
+import { Menu } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { AdminLink } from "@/components/admin-link";
+import { LayoutContent } from "@/components/layout-content";
+import { Toaster } from 'sonner';
+
+const geistSans = Geist({
+  subsets: ["latin"],
+  variable: "--font-geist-sans",
+});
 
 const defaultUrl = process.env.VERCEL_URL
   ? `https://${process.env.VERCEL_URL}`
@@ -16,76 +25,26 @@ const defaultUrl = process.env.VERCEL_URL
 
 export const metadata = {
   metadataBase: new URL(defaultUrl),
-  title: "Next.js and Supabase Starter Kit",
-  description: "The fastest way to build apps with Next.js and Supabase",
+  title: "Mensa App",
+  description: "Your digital canteen companion",
 };
 
-const geistSans = Geist({
-  display: "swap",
-  subsets: ["latin"],
-});
 
-function ThemeProviderWrapper({ children }: { children: React.ReactNode }) {
-  return (
-    <ThemeProvider
-      attribute="class"
-      defaultTheme="system"
-      enableSystem
-      disableTransitionOnChange
-    >
-      {children}
-    </ThemeProvider>
-  );
-}
 
 export default function RootLayout({
-  children,
-}: Readonly<{
+                                     children,
+                                   }: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
-    <html lang="en" className={geistSans.className} suppressHydrationWarning>
+      <html lang="en" className={geistSans.className} suppressHydrationWarning>
       <body className="bg-background text-foreground">
-        <Suspense fallback={<div>Loading...</div>}>
-          <ThemeProviderWrapper>
-            <CartProvider>
-              <main className="min-h-screen flex flex-col items-center">
-                <div className="flex-1 w-full flex flex-col gap-20 items-center">
-                  <nav className="w-full flex justify-center border-b border-b-foreground/10 h-16">
-                    <div className="w-full max-w-5xl flex justify-between items-center p-3 px-5 text-sm">
-                      <div className="flex gap-5 items-center font-semibold">
-                        <Link href={"/"}>Next.js Supabase Starter</Link>
-                        <div className="flex items-center gap-2">
-                          <DeployButton />
-                        </div>
-                      </div>
-                      {!hasEnvVars ? <EnvVarWarning /> : <HeaderAuth />}
-                    </div>
-                  </nav>
-                  <div className="flex flex-col gap-20 max-w-5xl p-5">
-                    {children}
-                  </div>
-
-                  <footer className="w-full flex items-center justify-center border-t mx-auto text-center text-xs gap-8 py-16">
-                    <p>
-                      Powered by{" "}
-                      <a
-                        href="https://supabase.com/?utm_source=create-next-app&utm_medium=template&utm_term=nextjs"
-                        target="_blank"
-                        className="font-bold hover:underline"
-                        rel="noreferrer"
-                      >
-                        Supabase
-                      </a>
-                    </p>
-                    <ThemeSwitcher />
-                  </footer>
-                </div>
-              </main>
-            </CartProvider>
-          </ThemeProviderWrapper>
-        </Suspense>
+      <Suspense fallback={<div>Loading...</div>}>
+        <LayoutContent>{children}</LayoutContent>
+      </Suspense>
+      {/* 👇 Toast Notification Container */}
+      <Toaster position="bottom-right" richColors />
       </body>
-    </html>
+      </html>
   );
 }
