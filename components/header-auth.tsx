@@ -45,7 +45,7 @@ export default function HeaderAuth() {
           <span className="text-sm text-muted-foreground">{accountType}</span>
           <Link href="/cart">
             <Button variant="ghost" size="icon" className="relative">
-              <ShoppingCart className="h-5 w-5" />
+              <span className="text-lg md:block hidden">🛒</span>
               {totalItems > 0 && (
                 <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
                   {totalItems}
@@ -59,7 +59,7 @@ export default function HeaderAuth() {
             </Link>
           )}
           <Link href="/orders">
-            <Button variant="ghost">Vermerkt</Button>
+            <Button variant="ghost">Your Orders</Button>
           </Link>
           <Button variant="ghost" onClick={handleSignOut}>
             Sign Out
