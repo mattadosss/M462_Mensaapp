@@ -12,6 +12,13 @@ import { Button } from "@/components/ui/button";
 import { useCart } from '@/lib/cart-context';
 import { useState } from 'react';
 import { toast } from 'sonner'; // ✅ Import toast
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
 
 interface MealCardProps {
     meal: Meal;
@@ -22,13 +29,22 @@ export function MealCard({ meal, className = '' }: MealCardProps) {
     const { addToCart } = useCart();
     const [orderTime, setOrderTime] = useState<string>('');
 
-    const handleAddToCart = () => {
-        const now = new Date();
-        now.setMinutes(now.getMinutes() - now.getTimezoneOffset()); // timezone correction
+    const timeSlots = [
+        '10:00', '10:30',
+        '11:00', '11:30',
+        '12:00', '12:30',
+        '13:00', '13:30',
+        '14:00'
+    ];
 
-        const timeToUse = orderTime || now.toISOString().slice(0, 16);
-        addToCart(meal, timeToUse);
-        toast.success('Added to cart!'); // ✅ Show toast notification
+    const handleAddToCart = () => {
+        if (!orderTime) {
+            toast.error('Please select a pickup time');
+            return;
+        }
+
+        addToCart(meal, orderTime);
+        toast.success('Added to cart!');
         setOrderTime('');
     };
 
@@ -57,22 +73,32 @@ export function MealCard({ meal, className = '' }: MealCardProps) {
                         <label className="text-sm font-medium text-gray-700 whitespace-nowrap">
                             Pickup Time:
                         </label>
-                        <input
-                            type="time"
-                            className="border rounded flex-1 px-2 py-1"
+                        <Select
                             value={orderTime.split('T')[1] || ''}
-                            onChange={(e) => {
+                            onValueChange={(value) => {
                                 const today = new Date().toISOString().split('T')[0];
-                                setOrderTime(`${today}T${e.target.value}`);
+                                setOrderTime(`${today}T${value}`);
                             }}
-                        />
+                        >
+                            <SelectTrigger className="flex-1">
+                                <SelectValue placeholder="Select pickup time" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                {timeSlots.map((time) => (
+                                    <SelectItem key={time} value={time}>
+                                        {time}
+                                    </SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
                     </div>
                     <Button
                         className="w-full"
                         onClick={handleAddToCart}
+                        disabled={!orderTime}
                     >
                         <ShoppingCart className="w-4 h-4 mr-2" />
-                        Add to Cart
+                        {!orderTime ? 'Select Pickup Time' : 'Add to Cart'}
                     </Button>
                 </div>
 
