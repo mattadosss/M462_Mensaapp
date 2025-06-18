@@ -59,7 +59,7 @@ export default function CartPage() {
     const handlePaymentSuccess = async () => {
         try {
             const supabase = createClient();
-            
+
             // Get the current user
             const { data: { user } } = await supabase.auth.getUser();
             if (!user) {
@@ -67,7 +67,7 @@ export default function CartPage() {
             }
 
             // Save each item as an order
-            const orderPromises = items.map(item => 
+            const orderPromises = items.map(item =>
                 supabase.from('orders').insert({
                     user_id: user.id,
                     meal_id: item.meal.id,
@@ -78,7 +78,7 @@ export default function CartPage() {
             );
 
             await Promise.all(orderPromises);
-            
+
             // Clear the cart and redirect
             clearCart();
             router.push('/success');
@@ -119,7 +119,7 @@ export default function CartPage() {
     return (
         <div className="container mx-auto px-4 py-6 sm:py-10">
             <h1 className="text-2xl sm:text-3xl font-bold mb-6 sm:mb-8">Your Cart</h1>
-            
+
             <div className="flex flex-col lg:grid lg:grid-cols-3 gap-6 sm:gap-8">
                 <div className="lg:col-span-2 order-2 lg:order-1">
                     <div className="bg-white rounded-lg shadow-md p-4 sm:p-6">
@@ -139,18 +139,18 @@ export default function CartPage() {
                                                 variant="outline"
                                                 size="icon"
                                                 onClick={() => updateQuantity(item.meal.id, item.orderTime, item.quantity - 1)}
-                                                className="h-8 w-8 sm:h-9 sm:w-9"
+                                                className="h-8 w-8 sm:h-9 sm:w-9 text-lg font-semibold hover:bg-gray-100 active:bg-gray-200 transition-colors"
                                             >
-                                                <Minus className="w-3 h-3 sm:w-4 sm:h-4" />
+                                                −
                                             </Button>
-                                            <span className="w-8 text-center text-sm sm:text-base font-medium">{item.quantity}</span>
+                                            <span className="w-8 text-center text-base sm:text-lg font-medium">{item.quantity}</span>
                                             <Button
                                                 variant="outline"
                                                 size="icon"
                                                 onClick={() => updateQuantity(item.meal.id, item.orderTime, item.quantity + 1)}
-                                                className="h-8 w-8 sm:h-9 sm:w-9"
+                                                className="h-8 w-8 sm:h-9 sm:w-9 text-lg font-semibold hover:bg-gray-100 active:bg-gray-200 transition-colors"
                                             >
-                                                <Plus className="w-3 h-3 sm:w-4 sm:h-4" />
+                                                +
                                             </Button>
                                         </div>
                                         <Button
@@ -184,4 +184,4 @@ export default function CartPage() {
             </div>
         </div>
     );
-} 
+}
