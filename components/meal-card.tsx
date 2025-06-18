@@ -55,10 +55,13 @@ export function MealCard({ meal, className = '' }: MealCardProps) {
                         <span className="font-semibold">{meal.portion_sizes.medium.price.toFixed(2)} €</span>
                     </div>
                     <input
-                        type="datetime-local"
+                        type="time"
                         className="border rounded w-full px-2 py-1 mb-2"
-                        value={orderTime}
-                        onChange={(e) => setOrderTime(e.target.value)}
+                        value={orderTime.split('T')[1] || ''}
+                        onChange={(e) => {
+                            const today = new Date().toISOString().split('T')[0];
+                            setOrderTime(`${today}T${e.target.value}`);
+                        }}
                     />
                     <Button
                         className="w-full"
